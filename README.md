@@ -12,7 +12,6 @@ system**.
 | VOKTER | NOVA |
 |---|---|
 | Generic multi-category catalog | Focused on sneakers & urban tech with a clear identity |
-| Web only, no native app | Companion mobile app (React Native) |
 | No trust/authenticity mechanism | Unique QR-verifiable authenticity code per product |
 | Static, admin-curated bundles | AI concierge that curates bundles from real catalog data |
 | Passive email newsletter | Drop calendar with waitlists and push notifications |
