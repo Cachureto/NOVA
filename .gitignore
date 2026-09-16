@@ -1,0 +1,9 @@
+node_modules
+.env
+.env.local
+dist
+.next
+.expo
+.turbo
+*.apk
+.DS_Store

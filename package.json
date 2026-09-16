@@ -1,0 +1,34 @@
+{
+  "name": "nova",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NOVA is a full-stack e-commerce platform for sneakers and urban tech, built as a technical proposal inspired by an analysis of VOKTER. Rather than replicating a generic multi-category store, NOVA is designed around three differentiators the reference platform lacks: verified product authenticity, an AI shopping assistant, and a community-driven drop system.",
+  "homepage": "https://github.com/Cachureto/NOVA#readme",
+  "bugs": {
+    "url": "https://github.com/Cachureto/NOVA/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cachureto/NOVA.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v && docker compose up -d"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  },
+  "packageManager": "npm@11.6.1"
+}
