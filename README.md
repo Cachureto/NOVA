@@ -18,76 +18,80 @@ system**.
 
 ## Features
 
-**Web**
-- Product catalog with category and price filters
-- Product page with authenticity certificate validation
-- Conversational AI search assistant (grounded strictly in real catalog data — no hallucinated products or prices)
+**Web** (`apps/web`, Next.js)
+- Product catalog with category, price range and sort filters
+- Product detail pages with real photos, authenticity certificate validation and reviews
+- Conversational AI search assistant powered by Gemini function calling (grounded strictly in real catalog data — no hallucinated products or prices)
+- Cart and checkout flow, order history
 - Drop calendar with waitlist sign-up
-- Mobile app download page (direct APK link + QR code)
-- JWT-based authentication
+- Admin panel: manage products, drops and orders
+- JWT-based authentication (login/register)
+- Mobile app download page (direct APK link + QR code, once a build exists)
 
-**Mobile (React Native + Expo)**
-- Login/registration sharing the same backend and JWT auth as the web app
-- Catalog and product detail views
+**Backend** (`apps/backend`, Express + PostgreSQL)
+- Modular API: auth, products, categories, orders, reviews, drops, authenticity, AI search
+- JWT access tokens, role-based admin routes
+- Zod request validation on every endpoint
+- Product authenticity codes (`NVP-XXXX...`) verifiable from the storefront
+
+**Mobile (planned, not yet in this repo)**
+- React Native (Expo) app sharing the same backend and JWT auth as the web app
 - QR scanner to verify a product's authenticity in person
 - Push notifications for new drops
-- Purchase history and reviews
 
 ## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Web | Next.js, Tailwind CSS |
-| Mobile | React Native (Expo) |
-| Backend | Node.js, Express, JWT |
-| Database | PostgreSQL (Supabase) |
-| AI | OpenAI/Anthropic API with function calling over the product database |
-| Hosting | Vercel (web), Render/Railway (backend), Supabase (database) |
+| Web | Next.js (App Router), Tailwind CSS |
+| Backend | Node.js, Express 5, JWT, Zod |
+| Database | PostgreSQL (local via Docker for development) |
+| AI | Google Gemini (`@google/genai`) with function calling over the product database |
+| Monorepo | npm workspaces + Turborepo |
 
 ## Project Structure
 
 ```
 .
-├── web/         # Next.js storefront
-├── mobile/      # React Native (Expo) app
-├── backend/     # Express API, auth, and AI assistant endpoint
+├── apps/
+│   ├── web/         # Next.js storefront (catalog, cart, checkout, admin, AI search)
+│   └── backend/     # Express API: auth, catalog, orders, drops, authenticity, AI
+├── docker-compose.yml   # Local PostgreSQL for development
+├── package.json          # npm workspaces + turbo scripts
 └── README.md
 ```
 
 ## Getting Started
 
+Install dependencies once from the repo root (npm workspaces):
+
+```bash
+npm install
+```
+
+### Database
+```bash
+npm run db:up   # starts PostgreSQL in Docker (docker-compose.yml)
+```
+The first boot runs the SQL files in `apps/backend/db/migrations/` automatically.
+
 ### Backend
 ```bash
-cd backend
-npm install
-cp .env.example .env   # set DATABASE_URL, JWT_SECRET, AI_API_KEY
+cd apps/backend
+cp .env.example .env   # set DATABASE_URL, JWT_ACCESS_SECRET, GEMINI_API_KEY
 npm run dev
 ```
 
 ### Web
 ```bash
-cd web
-npm install
+cd apps/web
 cp .env.example .env   # set NEXT_PUBLIC_API_URL
 npm run dev
 ```
 
-### Mobile
-```bash
-cd mobile
-npm install
-npx expo start
-```
+Or run everything at once from the repo root with `npm run dev` (Turborepo runs both dev servers in parallel).
 
-## Download the Mobile App
-
-The Android build is available directly from the web app's download page
-(`/download`), via direct link or QR code. To generate a new build:
-
-```bash
-cd mobile
-eas build -p android --profile preview
-```
+> **Nota sobre la IA**: la clave gratuita de Gemini (`aistudio.google.com/apikey`) tiene un límite bajo de solicitudes por día por modelo. Si el buscador conversacional empieza a devolver error, probablemente se agotó esa cuota diaria — no es un bug, hay que esperar al reinicio o usar una clave con más cuota.
 
 ## Screenshots
 

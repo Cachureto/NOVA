@@ -30,64 +30,94 @@ export default function FilterBar({ categories }) {
     router.push(params.toString() ? `${pathname}?${params.toString()}` : pathname);
   }
 
+  const activeCount = [category, minPrice, maxPrice].filter(Boolean).length;
+
   return (
-    <form onSubmit={applyFilters} className="card flex flex-col gap-4 p-4 sm:flex-row sm:flex-wrap sm:items-end">
-      <div className="min-w-[140px] flex-1">
-        <label className="label" htmlFor="filter-category">
-          Categoría
-        </label>
-        <select id="filter-category" className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="">Todas</option>
-          {categories.map((c) => (
-            <option key={c.slug} value={c.slug}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+    <div className="card p-5 sm:p-6">
+      <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
+            </svg>
+          </span>
+          <h2 className="text-sm font-semibold text-foreground">Filtrar catálogo</h2>
+        </div>
+        {activeCount > 0 && (
+          <span className="badge border-accent/30 text-accent">
+            {activeCount} filtro{activeCount === 1 ? '' : 's'} activo{activeCount === 1 ? '' : 's'}
+          </span>
+        )}
       </div>
-      <div className="w-28">
-        <label className="label" htmlFor="filter-min">
-          Precio mín.
-        </label>
-        <input
-          id="filter-min"
-          type="number"
-          min="0"
-          className="input"
-          placeholder="0"
-          value={minPrice}
-          onChange={(e) => setMinPrice(e.target.value)}
-        />
-      </div>
-      <div className="w-28">
-        <label className="label" htmlFor="filter-max">
-          Precio máx.
-        </label>
-        <input
-          id="filter-max"
-          type="number"
-          min="0"
-          className="input"
-          placeholder="1.000.000"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-        />
-      </div>
-      <div className="w-44">
-        <label className="label" htmlFor="filter-sort">
-          Ordenar por
-        </label>
-        <select id="filter-sort" className="input" value={sort} onChange={(e) => setSort(e.target.value)}>
-          {SORTS.map((s) => (
-            <option key={s.value} value={s.value}>
-              {s.label}
-            </option>
-          ))}
-        </select>
-      </div>
-      <button type="submit" className="btn-primary">
-        Filtrar
-      </button>
-    </form>
+
+      <form onSubmit={applyFilters} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_1.2fr_1fr_auto]">
+        <div>
+          <label className="label" htmlFor="filter-category">
+            Categoría
+          </label>
+          <select
+            id="filter-category"
+            className="input h-11"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="">Todas</option>
+            {categories.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="label">Rango de precio</label>
+          <div className="flex h-11 items-center gap-2 rounded-xl border border-border bg-background px-3 focus-within:border-accent">
+            <input
+              id="filter-min"
+              type="number"
+              min="0"
+              inputMode="numeric"
+              aria-label="Precio mínimo"
+              className="w-full bg-transparent text-sm text-foreground placeholder:text-muted focus:outline-none"
+              placeholder="Mín."
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+            />
+            <span className="text-muted">–</span>
+            <input
+              id="filter-max"
+              type="number"
+              min="0"
+              inputMode="numeric"
+              aria-label="Precio máximo"
+              className="w-full bg-transparent text-sm text-foreground placeholder:text-muted focus:outline-none"
+              placeholder="Máx."
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="label" htmlFor="filter-sort">
+            Ordenar por
+          </label>
+          <select id="filter-sort" className="input h-11" value={sort} onChange={(e) => setSort(e.target.value)}>
+            {SORTS.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex items-end">
+          <button type="submit" className="btn-primary h-11 w-full lg:w-auto lg:px-6">
+            Filtrar
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

@@ -11,3 +11,4 @@ export const unauthorized = (msg = 'No autenticado') => new HttpError(401, msg);
 export const forbidden = (msg = 'No tienes permiso') => new HttpError(403, msg);
 export const notFound = (msg = 'No encontrado') => new HttpError(404, msg);
 export const conflict = (msg) => new HttpError(409, msg);
+export const serviceUnavailable = (msg = 'Servicio no disponible temporalmente') => new HttpError(503, msg);
