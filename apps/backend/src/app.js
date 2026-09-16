@@ -6,6 +6,13 @@ import { env } from './config/env.js';
 import { pool } from './db/pool.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import productsRoutes from './modules/products/products.routes.js';
+import reviewsRoutes from './modules/reviews/reviews.routes.js';
+import ordersRoutes from './modules/orders/orders.routes.js';
+import dropsRoutes from './modules/drops/drops.routes.js';
+import authenticityRoutes from './modules/authenticity/authenticity.routes.js';
+import aiRoutes from './modules/ai/ai.routes.js';
+import categoriesRoutes from './modules/categories/categories.routes.js';
 
 export const app = express();
 
@@ -27,6 +34,13 @@ app.get('/api/health', async (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/products', productsRoutes);
+app.use('/api/products/:productId/reviews', reviewsRoutes);
+app.use('/api/orders', ordersRoutes);
+app.use('/api/drops', dropsRoutes);
+app.use('/api/authenticity', authenticityRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/categories', categoriesRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

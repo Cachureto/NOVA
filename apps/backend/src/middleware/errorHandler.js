@@ -16,6 +16,9 @@ export function errorHandler(err, _req, res, _next) {
   if (err.code === '23505') {
     return res.status(409).json({ error: 'El registro ya existe' });
   }
+  if (err.code === '23503') {
+    return res.status(409).json({ error: 'No se puede completar: hay registros relacionados' });
+  }
   console.error(err);
   res.status(500).json({
     error: 'Error interno del servidor',
