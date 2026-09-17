@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "NOVA",
+    "slug": "nova",
+    "scheme": "nova",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#09090b",
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "com.nova.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#09090b",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "plugins": ["expo-router", "expo-secure-store"]
+  }
+}

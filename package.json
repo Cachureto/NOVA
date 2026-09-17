@@ -19,6 +19,7 @@
     "packages/*"
   ],
   "scripts": {
+    "mobile": "npm run android -w apps/mobile",
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
@@ -31,5 +32,9 @@
   "devDependencies": {
     "turbo": "^2.0.0"
   },
-  "packageManager": "npm@11.6.1"
+  "packageManager": "npm@11.6.1",
+  "overrides": {
+  "react": "19.2.3",
+  "react-dom": "19.2.3"
+  }
 }
