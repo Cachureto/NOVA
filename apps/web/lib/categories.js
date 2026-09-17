@@ -1,22 +1,8 @@
-import {
-  BatteryCharging,
-  BedDouble,
-  Cable,
-  Footprints,
-  Gamepad2,
-  Headphones,
-  Layers,
-  Shirt,
-  Smartphone,
-  Watch,
-} from 'lucide-react';
+import { BatteryCharging, BedDouble, Cable, Gamepad2, Headphones, Layers, Smartphone } from 'lucide-react';
 
 // Asigna un ícono según el slug/nombre, así funciona con cualquier categoría que cree el admin
 const RULES = [
-  [/sneak|footwear|calzado|tenis|zapat/, Footprints],
-  [/apparel|ropa|camis|hood/, Shirt],
   [/audio|audif|sonido|parlant|micro/, Headphones],
-  [/wearable|reloj|watch|band/, Watch],
   [/power|bater|bank/, BatteryCharging],
   [/carg|cable|charg/, Cable],
   [/consol|gam|tv|entreten|proyect/, Gamepad2],

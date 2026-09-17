@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 
 export const metadata = {
   title: {
-    default: 'NOVA — Sneakers y tecnología urbana verificada',
+    default: 'NOVA — Tecnología urbana con autenticidad verificada',
     template: '%s · NOVA',
   },
   description:

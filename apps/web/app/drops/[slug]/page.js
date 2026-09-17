@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BadgeCheck, Bell, CalendarClock, Package } from 'lucide-react';
@@ -8,14 +9,15 @@ import WaitlistButton from '@/components/WaitlistButton';
 import Countdown from '@/components/Countdown';
 import ProductGrid from '@/components/ProductGrid';
 
-async function getDrop(slug) {
+// cache(): generateMetadata y la página comparten la misma petición en cada render
+const getDrop = cache(async (slug) => {
   try {
     return await apiFetch(`/api/drops/${slug}`);
   } catch (err) {
     if (err instanceof ApiError && err.status === 404) return null;
     throw err;
   }
-}
+});
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;

@@ -8,7 +8,6 @@ const schema = z.object({
   JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET debe tener al menos 32 caracteres'),
   JWT_ACCESS_TTL: z.string().default('15m'),
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().positive().default(30),
-  AI_PROVIDER: z.enum(['gemini']).default('gemini'),
   AI_MODEL: z.string().default('gemini-3.6-flash'),
   GEMINI_API_KEY: z.string().optional(),
 });

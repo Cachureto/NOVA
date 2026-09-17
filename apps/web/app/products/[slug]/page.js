@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BadgeCheck, Package, ScanLine, Truck } from 'lucide-react';
@@ -11,14 +12,15 @@ import ProductGrid from '@/components/ProductGrid';
 import SectionHeading from '@/components/SectionHeading';
 import StarRating from '@/components/StarRating';
 
-async function getProduct(slug) {
+// cache(): generateMetadata y la página comparten la misma petición en cada render
+const getProduct = cache(async (slug) => {
   try {
     return await apiFetch(`/api/products/${slug}`);
   } catch (err) {
     if (err instanceof ApiError && err.status === 404) return null;
     throw err;
   }
-}
+});
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;

@@ -1,102 +1,203 @@
-# NOVA — Verified Streetwear & Tech Commerce Platform
+# NOVA — Verified Urban Tech Commerce
 
-NOVA is a full-stack e-commerce platform for sneakers and urban tech, built as a
+NOVA is a full-stack e-commerce platform for urban tech, accessories and home goods, built as a
 technical proposal inspired by an analysis of [VOKTER](https://vokter-five.vercel.app/).
-Rather than replicating a generic multi-category store, NOVA is designed around
-three differentiators the reference platform lacks: **verified product
-authenticity**, an **AI shopping assistant**, and a **community-driven drop
-system**.
+Instead of replicating a generic multi-category store, NOVA is built around three differentiators
+the reference platform lacks: **verified product authenticity**, an **AI shopping assistant**
+grounded in the real catalog, and **drops with waitlists**.
 
 ## Why NOVA is different
 
 | VOKTER | NOVA |
 |---|---|
-| Generic multi-category catalog | Focused on sneakers & urban tech with a clear identity |
-| No trust/authenticity mechanism | Unique QR-verifiable authenticity code per product |
-| Static, admin-curated bundles | AI concierge that curates bundles from real catalog data |
-| Passive email newsletter | Drop calendar with waitlists and push notifications |
+| Generic multi-category catalog | Curated urban tech catalog with its own visual identity |
+| No trust/authenticity mechanism | Unique, verifiable authenticity code (`NVP-…`) on every product |
+| Static, admin-curated bundles | AI assistant that answers only with real products, prices and stock |
+| Passive email newsletter | Drop calendar with countdowns, waitlists and (mobile) push alerts |
 
 ## Features
 
 **Web** (`apps/web`, Next.js)
-- Product catalog with category, price range and sort filters
-- Product detail pages with real photos, authenticity certificate validation and reviews
-- Conversational AI search assistant powered by Gemini function calling (grounded strictly in real catalog data — no hallucinated products or prices)
-- Cart and checkout flow, order history
-- Drop calendar with waitlist sign-up
-- Admin panel: manage products, drops and orders
-- JWT-based authentication (login/register)
-- Mobile app download page (direct APK link + QR code, once a build exists)
+- Home with live/upcoming drop, categories with product counts, new arrivals and AI entry point
+- Catalog with category and price filters, text search, sorting and pagination
+- Product page with gallery, stock status, authenticity certificate validation, reviews and related products
+- Conversational AI assistant (Gemini function calling) that never invents products, prices or stock
+- Drop calendar with countdowns and waitlist sign-up
+- Cart, checkout and order history with order progress
+- Admin panel: products, drops and orders
+- JWT authentication (register/login) shared with the future mobile app
+- Mobile app download page (direct APK link + QR code once a build exists)
 
 **Backend** (`apps/backend`, Express + PostgreSQL)
-- Modular API: auth, products, categories, orders, reviews, drops, authenticity, AI search
-- JWT access tokens, role-based admin routes
-- Zod request validation on every endpoint
-- Product authenticity codes (`NVP-XXXX...`) verifiable from the storefront
+- Modules: auth, products, categories, orders, reviews, drops, authenticity, AI search
+- Short-lived JWT access tokens + rotating refresh tokens (httpOnly cookie on web, body on mobile)
+- Role-based admin routes and Zod validation on every endpoint
+- Authenticity validation with an audit log of every check
+- AI assistant: the model only translates the message into filters; results always come from PostgreSQL,
+  with automatic filter relaxation when the model picks a category that returns nothing
 
-**Mobile (planned, not yet in this repo)**
-- React Native (Expo) app sharing the same backend and JWT auth as the web app
+**Mobile** (`apps/mobile`, planned)
+- React Native (Expo) app using the same backend and JWT auth
 - QR scanner to verify a product's authenticity in person
 - Push notifications for new drops
 
-## Tech Stack
+## Tech stack
 
 | Layer | Technology |
 |---|---|
-| Web | Next.js (App Router), Tailwind CSS |
-| Backend | Node.js, Express 5, JWT, Zod |
-| Database | PostgreSQL (local via Docker for development) |
-| AI | Google Gemini (`@google/genai`) with function calling over the product database |
+| Web | Next.js 16 (App Router), React 19, Tailwind CSS 4, lucide-react, self-hosted fonts (Fontsource) |
+| Backend | Node.js 22, Express 5, JWT, Zod, bcryptjs |
+| Database | PostgreSQL 16 (Docker for local development) |
+| AI | Google Gemini (`@google/genai`) with function calling |
 | Monorepo | npm workspaces + Turborepo |
 
-## Project Structure
+## Project structure
 
 ```
 .
 ├── apps/
-│   ├── web/         # Next.js storefront (catalog, cart, checkout, admin, AI search)
-│   └── backend/     # Express API: auth, catalog, orders, drops, authenticity, AI
-├── docker-compose.yml   # Local PostgreSQL for development
-├── package.json          # npm workspaces + turbo scripts
-└── README.md
+│   ├── backend/
+│   │   ├── db/
+│   │   │   ├── migrations/   # SQL schema (run automatically on the first Docker boot)
+│   │   │   └── seeds/        # Demo catalog: 40 products, 6 categories, 3 drops
+│   │   ├── scripts/          # seed.js (db:seed) and make-admin.js (db:admin)
+│   │   └── src/
+│   │       ├── config/  db/  middleware/  utils/
+│   │       └── modules/      # auth, products, categories, orders, reviews, drops, authenticity, ai
+│   └── web/
+│       ├── app/              # Routes: catalog, products, drops, search, cart, checkout, account, admin…
+│       ├── components/       # UI components (ProductCard, FilterBar, AuthenticityValidator…)
+│       ├── lib/              # API client, auth/cart contexts, formatters
+│       └── public/products/  # Product photos used by the demo catalog
+├── docker-compose.yml        # Local PostgreSQL 16 (host port 5433)
+├── package.json              # npm workspaces + scripts
+└── turbo.json
 ```
 
-## Getting Started
+## Getting started
 
-Install dependencies once from the repo root (npm workspaces):
+**Requirements:** Node.js 22+, npm 10+, Docker Desktop.
+
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-### Database
-```bash
-npm run db:up   # starts PostgreSQL in Docker (docker-compose.yml)
-```
-The first boot runs the SQL files in `apps/backend/db/migrations/` automatically.
+### 2. Start PostgreSQL
 
-### Backend
 ```bash
-cd apps/backend
-cp .env.example .env   # set DATABASE_URL, JWT_ACCESS_SECRET, GEMINI_API_KEY
+npm run db:up
+```
+
+On the first boot Docker runs every file in `apps/backend/db/migrations/`. The database is exposed on
+`localhost:5433` (user `nova`, password `nova_dev`, database `nova`).
+
+### 3. Configure environment variables
+
+```bash
+cp apps/backend/.env.example apps/backend/.env
+cp apps/web/.env.example apps/web/.env
+```
+
+In `apps/backend/.env` set at least:
+- `JWT_ACCESS_SECRET`: generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`
+- `GEMINI_API_KEY`: free key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (only needed for the AI assistant)
+
+### 4. Load the demo catalog
+
+```bash
+npm run db:seed
+```
+
+Idempotent: it can be run many times without duplicating data. Prices and stock are demo values.
+
+### 5. Run the apps
+
+```bash
 npm run dev
 ```
 
-### Web
+- Web: http://localhost:3000
+- API: http://localhost:4000/api/health
+
+### 6. Create an admin account
+
+Every account created from the website is a customer. To open the admin panel, register on the web
+and then run:
+
 ```bash
-cd apps/web
-cp .env.example .env   # set NEXT_PUBLIC_API_URL
-npm run dev
+npm run db:admin -- your@email.com
 ```
 
-Or run everything at once from the repo root with `npm run dev` (Turborepo runs both dev servers in parallel).
+Log out and log in again so the session picks up the admin role. To create a new admin account
+directly (the password is asked in the terminal):
 
-> **Nota sobre la IA**: la clave gratuita de Gemini (`aistudio.google.com/apikey`) tiene un límite bajo de solicitudes por día por modelo. Si el buscador conversacional empieza a devolver error, probablemente se agotó esa cuota diaria — no es un bug, hay que esperar al reinicio o usar una clave con más cuota.
+```bash
+npm run db:admin -- your@email.com "Your Name"
+```
 
-## Screenshots
+## Available scripts (repo root)
 
-*Add screenshots or a short screen recording of the web and mobile apps here
-before submission.*
+| Script | What it does |
+|---|---|
+| `npm run dev` | Runs web and backend in parallel (Turborepo) |
+| `npm run build` | Production build |
+| `npm run lint` | Lints the web app |
+| `npm run db:up` / `db:down` | Starts / stops the PostgreSQL container |
+| `npm run db:reset` | Deletes the database volume and recreates it from the migrations |
+| `npm run db:seed` | Loads the demo catalog |
+| `npm run db:admin -- email` | Gives admin role to an account (or creates it) |
+
+## Sharing the database with the team
+
+For a clean setup, each teammate runs steps 2–6 above. To share your exact data (products, orders,
+accounts), export a dump:
+
+```bash
+docker exec nova-db pg_dump -U nova -d nova -Fc --no-owner --exclude-table-data=refresh_tokens -f /tmp/nova.dump
+docker cp nova-db:/tmp/nova.dump ./nova.dump
+```
+
+And restore it (backend stopped; this **replaces** the local database):
+
+```bash
+docker cp ./nova.dump nova-db:/tmp/nova.dump
+docker exec nova-db psql -U nova -d postgres -c "DROP DATABASE IF EXISTS nova WITH (FORCE)" -c "CREATE DATABASE nova"
+docker exec nova-db pg_restore -U nova -d nova --no-owner /tmp/nova.dump
+```
+
+Dumps contain user emails and password hashes: share them privately and never commit them
+(`*.dump` is git-ignored).
+
+## Technical decisions
+
+- **Relational model instead of arrays.** Order items, drop products and waitlists are join tables
+  with foreign keys, so data stays consistent and queries per user are indexed.
+- **Money as integers.** Prices are stored as integer pesos (`price_cents`), never floats, and are
+  frozen in `order_items` at purchase time.
+- **Authenticity.** Product codes (`NVP-…`) live on each product; the schema also supports per-unit
+  codes (`NVU-…`) for physical QR labels. Every validation is logged in `authenticity_checks`.
+- **Grounded AI.** Gemini only returns structured filters (text, category, price range) through
+  function calling. Categories come from the database, and products, prices and stock always come
+  from PostgreSQL, so the assistant cannot hallucinate items.
+- **Auth for web and mobile.** 15-minute access JWT plus rotating refresh tokens stored hashed.
+  Reusing an already-rotated refresh token revokes every session of that user.
+- **Always-fresh pages.** Catalog, drops and stock pages render on every request, so they never show
+  stale prices or stock.
+
+## Troubleshooting
+
+- **The AI assistant returns an error:** the free Gemini key has a low daily request quota per model.
+  Wait for the reset or use a key with more quota.
+- **`password authentication failed`:** check that `DATABASE_URL` uses port `5433` when using Docker.
+- **The admin panel redirects to the home page:** the account is not an admin yet (see step 6) or the
+  session is older than the role change; log out and log in again.
+
+## Mobile app download
+
+The APK link and QR code will be available at `/download` once the first EAS build is published
+(`NEXT_PUBLIC_APK_URL` in `apps/web/.env`).
 
 ## Authors
 
@@ -106,6 +207,5 @@ before submission.*
 
 ## License
 
-This project was developed for evaluation purposes as part of a technical
-assessment referencing [VOKTER](https://vokter-five.vercel.app/) as a design
-inspiration only.
+This project was developed for evaluation purposes as part of a technical assessment referencing
+[VOKTER](https://vokter-five.vercel.app/) as a design inspiration only.

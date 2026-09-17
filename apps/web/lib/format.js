@@ -28,12 +28,6 @@ export function formatDate(iso) {
   return `${date}, ${time}`;
 }
 
-export function formatShortDate(iso) {
-  return new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'short', timeZone: TIME_ZONE }).format(
-    new Date(iso),
-  );
-}
-
 export function formatNumber(n) {
   return new Intl.NumberFormat('es-CO').format(n);
 }

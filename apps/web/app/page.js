@@ -28,14 +28,6 @@ async function getHomeData() {
     apiFetch('/api/categories'),
   ]);
 
-  // Una consulta liviana por categoría para mostrar cuántos productos tiene y una foto de portada
-  const categoryData = await Promise.all(
-    categories.map(async (c) => {
-      const res = await apiFetch(`/api/products?category=${encodeURIComponent(c.slug)}&limit=1`);
-      return { ...c, count: res.total, coverUrl: res.items[0]?.coverUrl ?? null };
-    }),
-  );
-
   const activeDrops = drops
     .filter((d) => ['live', 'scheduled'].includes(d.status))
     .sort((a, b) => new Date(a.launchAt) - new Date(b.launchAt));
@@ -43,7 +35,7 @@ async function getHomeData() {
   return {
     products,
     total,
-    categories: categoryData.filter((c) => c.count > 0).sort((a, b) => b.count - a.count),
+    categories: categories.filter((c) => c.productCount > 0).sort((a, b) => b.productCount - a.productCount),
     liveDrop: activeDrops.find((d) => d.status === 'live') ?? null,
     nextDrop: activeDrops.find((d) => d.status === 'scheduled') ?? null,
     activeDrops,
@@ -57,7 +49,7 @@ const TRUST = [
   { icon: Truck, title: 'Envíos nacionales', text: 'Sigue tu pedido en tu cuenta' },
 ];
 
-const AI_SUGGESTIONS = ['Cargador rápido bajo $100.000', 'Algo para jugar en la TV', 'Power bank para viajar'];
+const AI_SUGGESTIONS = ['Power bank para viajar', 'Algo para jugar en la TV', 'Soporte de celular para la moto'];
 
 function HeroVisual({ products }) {
   const [main, second, third] = products;
@@ -153,8 +145,8 @@ export default async function HomePage() {
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
-              Sneakers y tecnología urbana con un código de autenticidad único en cada producto. Encuentra lo que buscas
-              con nuestro asistente de IA y entérate antes que nadie de los próximos drops.
+              Tecnología urbana, accesorios y hogar con un código de autenticidad único en cada producto. Encuentra lo
+              que buscas con nuestro asistente de IA y entérate antes que nadie de los próximos drops.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -246,7 +238,7 @@ export default async function HomePage() {
                         {c.name}
                       </h3>
                       <p className="font-mono text-[11px] text-white/60">
-                        {c.count} producto{c.count === 1 ? '' : 's'}
+                        {c.productCount} producto{c.productCount === 1 ? '' : 's'}
                       </p>
                     </div>
                     <ArrowRight
@@ -433,7 +425,7 @@ export default async function HomePage() {
                 name="q"
                 required
                 className="input h-12 rounded-full px-5"
-                placeholder="Ej: audífonos para correr bajo $80.000"
+                placeholder="Ej: cargador rápido bajo $100.000"
                 aria-label="Pregunta para el asistente"
               />
               <button type="submit" className="btn-primary h-12 shrink-0">

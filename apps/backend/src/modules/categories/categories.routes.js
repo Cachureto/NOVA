@@ -6,8 +6,23 @@ import { createCategorySchema } from './categories.schemas.js';
 
 const router = Router();
 
+// Incluye cuántos productos publicados tiene cada categoría y la foto del más reciente,
+// así el home no necesita una consulta extra por categoría.
 router.get('/', async (_req, res) => {
-  const { rows } = await query('SELECT slug, name FROM categories ORDER BY name');
+  const { rows } = await query(
+    `SELECT c.slug, c.name,
+            COUNT(p.id)::int AS "productCount",
+            (SELECT i.url
+               FROM products p2
+               JOIN product_images i ON i.product_id = p2.id
+              WHERE p2.category_id = c.id AND p2.is_published
+              ORDER BY p2.created_at DESC, i.position
+              LIMIT 1) AS "coverUrl"
+       FROM categories c
+       LEFT JOIN products p ON p.category_id = c.id AND p.is_published
+      GROUP BY c.id
+      ORDER BY c.name`,
+  );
   res.json({ items: rows });
 });
 

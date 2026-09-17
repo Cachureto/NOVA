@@ -2,13 +2,13 @@
 
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { ArrowUp, BatteryCharging, Gamepad2, Headphones, RotateCcw, ShieldCheck, Smartphone } from 'lucide-react';
+import { ArrowUp, BatteryCharging, Cable, Gamepad2, RotateCcw, ShieldCheck, Smartphone } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import ProductGrid from '@/components/ProductGrid';
 import { NovaMark } from '@/components/Logo';
 
 const SUGGESTIONS = [
-  { icon: Headphones, text: 'Audífonos para correr bajo $80.000' },
+  { icon: Cable, text: 'Cargador rápido bajo $100.000' },
   { icon: BatteryCharging, text: 'Un power bank para viajar' },
   { icon: Gamepad2, text: 'Algo para jugar en la TV' },
   { icon: Smartphone, text: 'Accesorios para el celular en la moto' },
@@ -163,7 +163,7 @@ function SearchChat() {
         <div className="flex items-center gap-2 rounded-full border border-border-strong bg-surface/95 p-1.5 pl-5 shadow-2xl shadow-black/60 backdrop-blur-xl focus-within:border-accent">
           <input
             className="h-10 flex-1 bg-transparent text-sm text-foreground placeholder:text-subtle focus:outline-none"
-            placeholder="Ej: audífonos para correr bajo $80.000"
+            placeholder="Ej: cargador rápido bajo $100.000"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             aria-label="Mensaje para el asistente"

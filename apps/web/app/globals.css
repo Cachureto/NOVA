@@ -2,8 +2,8 @@
 
 /* =====================================================================
    NOVA · Sistema de diseño
-   Base oscura tipo "vitrina nocturna", acento volt (color icónico del
-   running) y verde de verificación reservado para autenticidad.
+   Base oscura tipo "vitrina nocturna", un único acento (verde neón) y un
+   verde de verificación reservado para autenticidad.
    ===================================================================== */
 
 :root {
@@ -45,17 +45,8 @@
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Unbounded Variable", "Inter Variable", ui-sans-serif, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
-  --animate-marquee: marquee 40s linear infinite;
   --animate-fade-up: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
   @keyframes fade-up {
     from {
       opacity: 0;
@@ -136,9 +127,6 @@ input[type="number"] {
   }
   .btn-ghost {
     @apply inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium text-muted transition-colors hover:bg-surface-hover hover:text-foreground disabled:pointer-events-none disabled:opacity-40;
-  }
-  .btn-danger {
-    @apply inline-flex h-10 items-center justify-center gap-2 rounded-full border border-danger/30 px-4 text-sm font-medium text-danger transition-colors hover:bg-danger/10;
   }
   .icon-btn {
     @apply relative inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground transition-colors hover:bg-surface-hover;

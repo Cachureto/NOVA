@@ -14,6 +14,11 @@ INSERT INTO categories (slug, name) VALUES
   ('audio',       'Audio')
 ON CONFLICT (slug) DO NOTHING;
 
+-- Limpia las categorías iniciales que ya no se usan (solo si no tienen productos)
+DELETE FROM categories c
+WHERE c.slug IN ('sneakers', 'apparel', 'wearables')
+  AND NOT EXISTS (SELECT 1 FROM products p WHERE p.category_id = c.id);
+
 CREATE TEMP TABLE seed_products (
   slug TEXT, name TEXT, category TEXT, brand TEXT, price INT, stock INT, description TEXT
 ) ON COMMIT DROP;

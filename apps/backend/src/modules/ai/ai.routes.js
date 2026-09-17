@@ -7,7 +7,7 @@ import * as ai from './ai.service.js';
 
 const router = Router();
 
-// Cada búsqueda cuesta una llamada real a OpenAI: se limita por IP para evitar abuso.
+// Cada búsqueda cuesta una llamada real a Gemini: se limita por IP para evitar abuso.
 const aiLimiter = rateLimit({
   windowMs: 60 * 1000,
   limit: 15,

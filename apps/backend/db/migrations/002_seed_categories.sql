@@ -4,11 +4,12 @@
 BEGIN;
 
 INSERT INTO categories (slug, name) VALUES
-    ('sneakers', 'Sneakers'),
-    ('apparel', 'Ropa Urbana'),
+    ('accessories', 'Accesorios'),
     ('audio', 'Audio'),
-    ('wearables', 'Wearables'),
-    ('accessories', 'Accesorios')
+    ('chargers', 'Cargadores'),
+    ('gaming', 'Gaming y TV'),
+    ('home', 'Hogar'),
+    ('power-banks', 'Power Banks')
 ON CONFLICT (slug) DO NOTHING;
 
 COMMIT;

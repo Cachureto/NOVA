@@ -40,8 +40,8 @@ export async function listProducts({ category, minPrice, maxPrice, q, sort, page
   if (minPrice !== undefined) conditions.push(`vc.price_cents >= ${push(minPrice)}`);
   if (maxPrice !== undefined) conditions.push(`vc.price_cents <= ${push(maxPrice)}`);
   // OR por palabra en vez de plainto_tsquery (que exige TODAS las palabras):
-  // una búsqueda conversacional como "audífonos para correr" no debe fallar
-  // solo porque el catálogo no repite literalmente la palabra "correr".
+  // una búsqueda conversacional como "cargador rápido para el carro" no debe fallar
+  // solo porque el catálogo no repite literalmente todas las palabras.
   if (q) {
     const words = q.split(/\s+/).filter(Boolean);
     if (words.length) {

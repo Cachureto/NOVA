@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Check, Search, SlidersHorizontal, X } from 'lucide-react';
 
-export const SORTS = [
+const SORTS = [
   { value: 'newest', label: 'Más nuevos' },
   { value: 'price_asc', label: 'Precio: menor a mayor' },
   { value: 'price_desc', label: 'Precio: mayor a menor' },
@@ -110,8 +110,14 @@ function FilterPanel({ categories }) {
                   }`}
                   aria-pressed={active}
                 >
-                  {c.name}
-                  {active && <Check size={15} className="text-accent" />}
+                  <span className="truncate">{c.name}</span>
+                  {active ? (
+                    <Check size={15} className="shrink-0 text-accent" />
+                  ) : (
+                    c.productCount !== undefined && (
+                      <span className="shrink-0 font-mono text-[11px] text-subtle">{c.productCount}</span>
+                    )
+                  )}
                 </button>
               </li>
             );

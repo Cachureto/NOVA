@@ -43,8 +43,8 @@ export default function Footer() {
         <div className="max-w-sm">
           <Logo />
           <p className="mt-5 text-sm leading-relaxed text-muted">
-            Sneakers y tecnología urbana con origen comprobable. Cada producto de NOVA tiene un código único que puedes
-            validar en la web o con la app.
+            Tecnología urbana, accesorios y hogar con origen comprobable. Cada producto de NOVA tiene un código único
+            que puedes validar en la web o con la app.
           </p>
           <ul className="mt-6 flex flex-col gap-2.5">
             {PILLARS.map(({ icon: Icon, label }) => (

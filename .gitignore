@@ -7,3 +7,4 @@ dist
 .turbo
 *.apk
 .DS_Store
+*.dump

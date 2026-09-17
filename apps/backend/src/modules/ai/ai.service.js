@@ -24,13 +24,13 @@ async function getCategories() {
   return rows;
 }
 
-export function buildSearchFunction(categories) {
+function buildSearchFunction(categories) {
   const properties = {
     query: {
       type: Type.STRING,
       description:
         'Solo el tipo de producto o sus características clave, en 1 a 3 palabras y sin verbos ni relleno. ' +
-        'Ej: "cargador", "power bank", "audífonos correr". Omítelo si el usuario solo pide una categoría.',
+        'Ej: "cargador", "power bank", "soporte moto". Omítelo si el usuario solo pide una categoría.',
     },
     minPriceCents: { type: Type.INTEGER, description: 'Precio mínimo en pesos COP (ej. 50000)' },
     maxPriceCents: { type: Type.INTEGER, description: 'Precio máximo en pesos COP (ej. 80000)' },
@@ -53,7 +53,7 @@ export function buildSearchFunction(categories) {
   };
 }
 
-const SYSTEM_PROMPT = `Eres el módulo de comprensión de búsqueda de NOVA, una tienda de sneakers y tecnología urbana.
+const SYSTEM_PROMPT = `Eres el módulo de comprensión de búsqueda de NOVA, una tienda de tecnología urbana, accesorios y hogar.
 Tu única tarea es traducir el mensaje del usuario en una llamada a la función search_products con los filtros
 correctos: palabras clave cortas del producto, la categoría que corresponda (solo si encaja claramente) y el rango
 de precio en pesos COP. No conoces el catálogo real de NOVA: nunca inventes ni menciones nombres de productos,
@@ -130,7 +130,7 @@ function buildReply(products, relaxed) {
 // En vez de responder "no encontré nada", se relajan los filtros en orden, siempre sobre la BD real
 // y respetando el presupuesto del usuario:
 //   1) todos los filtros  2) sin la categoría  3) solo la categoría (sin palabras clave)
-export async function searchCatalog(filters) {
+async function searchCatalog(filters) {
   const q = filters.query?.trim() || undefined;
   const category = filters.category || undefined;
   const base = {
