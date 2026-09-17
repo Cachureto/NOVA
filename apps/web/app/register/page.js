@@ -1,13 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Check, CircleAlert, LoaderCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
+import AuthShell from '@/components/AuthShell';
+import PasswordInput from '@/components/PasswordInput';
 
-export default function RegisterPage() {
+function RegisterForm() {
   const { register, user } = useAuth();
   const router = useRouter();
+  const next = useSearchParams().get('next') ?? '/';
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,8 +19,8 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (user) router.replace('/');
-  }, [user, router]);
+    if (user) router.replace(next);
+  }, [user, next, router]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -31,53 +35,97 @@ export default function RegisterPage() {
     }
   }
 
-  return (
-    <div className="mx-auto flex max-w-md flex-col gap-6 px-4 py-16 sm:px-6">
-      <div>
-        <h1 className="text-3xl font-bold">Crea tu cuenta NOVA</h1>
-        <p className="mt-2 text-muted">Un mismo login para la web y la app móvil.</p>
-      </div>
+  const rules = [
+    { ok: password.length >= 8, label: 'Mínimo 8 caracteres' },
+    { ok: /[A-Za-z]/.test(password), label: 'Una letra' },
+    { ok: /\d/.test(password), label: 'Un número' },
+  ];
 
-      <form onSubmit={handleSubmit} className="card flex flex-col gap-4 p-6">
+  return (
+    <AuthShell
+      eyebrow="Únete a NOVA"
+      title="Crea tu cuenta"
+      description="Un mismo login para la tienda web y la app móvil."
+      footer={
+        <>
+          ¿Ya tienes cuenta?{' '}
+          <Link href={`/login${next !== '/' ? `?next=${encodeURIComponent(next)}` : ''}`} className="link">
+            Ingresa aquí
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div>
           <label className="label" htmlFor="name">
             Nombre
           </label>
-          <input id="name" required className="input" value={name} onChange={(e) => setName(e.target.value)} />
+          <input
+            id="name"
+            required
+            autoComplete="name"
+            className="input"
+            placeholder="Tu nombre"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
         <div>
           <label className="label" htmlFor="email">
             Email
           </label>
-          <input id="email" type="email" required className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input
+            id="email"
+            type="email"
+            required
+            autoComplete="email"
+            className="input"
+            placeholder="tu@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div>
           <label className="label" htmlFor="password">
             Contraseña
           </label>
-          <input
+          <PasswordInput
             id="password"
-            type="password"
-            required
             minLength={8}
-            className="input"
+            autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <p className="mt-1 text-xs text-muted">Mínimo 8 caracteres, con al menos una letra y un número.</p>
+          <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+            {rules.map((r) => (
+              <li
+                key={r.label}
+                className={`flex items-center gap-1.5 text-xs transition-colors ${r.ok ? 'text-live' : 'text-subtle'}`}
+              >
+                <Check size={13} /> {r.label}
+              </li>
+            ))}
+          </ul>
         </div>
-        {error && <p className="text-sm text-danger">{error}</p>}
-        <button type="submit" className="btn-primary" disabled={loading}>
+        {error && (
+          <div className="alert-error" role="alert">
+            <CircleAlert size={18} className="shrink-0" />
+            {error}
+          </div>
+        )}
+        <button type="submit" className="btn-primary h-12 text-[15px]" disabled={loading}>
+          {loading && <LoaderCircle size={18} className="animate-spin" />}
           {loading ? 'Creando cuenta…' : 'Crear cuenta'}
         </button>
       </form>
+    </AuthShell>
+  );
+}
 
-      <p className="text-center text-sm text-muted">
-        ¿Ya tienes cuenta?{' '}
-        <Link href="/login" className="text-accent underline">
-          Ingresa aquí
-        </Link>
-      </p>
-    </div>
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
   );
 }

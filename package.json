@@ -25,7 +25,8 @@
     "lint": "turbo run lint",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
-    "db:reset": "docker compose down -v && docker compose up -d"
+    "db:reset": "docker compose down -v && docker compose up -d",
+    "db:seed": "npm run db:seed -w apps/backend"
   },
   "devDependencies": {
     "turbo": "^2.0.0"

@@ -2,122 +2,227 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { Check, Search, SlidersHorizontal, X } from 'lucide-react';
 
-const SORTS = [
+export const SORTS = [
   { value: 'newest', label: 'Más nuevos' },
   { value: 'price_asc', label: 'Precio: menor a mayor' },
   { value: 'price_desc', label: 'Precio: mayor a menor' },
   { value: 'rating', label: 'Mejor calificados' },
 ];
 
-export default function FilterBar({ categories }) {
+const PRICE_PRESETS = [
+  { label: 'Hasta $50.000', min: '', max: '50000' },
+  { label: '$50.000 – $100.000', min: '50000', max: '100000' },
+  { label: '$100.000 – $200.000', min: '100000', max: '200000' },
+  { label: 'Más de $200.000', min: '200000', max: '' },
+];
+
+// Actualiza la URL con los filtros; cualquier cambio vuelve a la página 1
+function useFilterNavigation() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [category, setCategory] = useState(searchParams.get('category') ?? '');
-  const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') ?? '');
-  const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') ?? '');
-  const [sort, setSort] = useState(searchParams.get('sort') ?? 'newest');
-
-  function applyFilters(e) {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (category) params.set('category', category);
-    if (minPrice) params.set('minPrice', minPrice);
-    if (maxPrice) params.set('maxPrice', maxPrice);
-    if (sort && sort !== 'newest') params.set('sort', sort);
-    router.push(params.toString() ? `${pathname}?${params.toString()}` : pathname);
+  function update(changes) {
+    const params = new URLSearchParams(searchParams.toString());
+    for (const [key, value] of Object.entries(changes)) {
+      if (value === '' || value === null || value === undefined) params.delete(key);
+      else params.set(key, value);
+    }
+    params.delete('page');
+    if (params.get('sort') === 'newest') params.delete('sort');
+    const qs = params.toString();
+    router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   }
 
-  const activeCount = [category, minPrice, maxPrice].filter(Boolean).length;
+  return { update, searchParams, clear: () => router.push(pathname, { scroll: false }) };
+}
+
+export function SortSelect() {
+  const { update, searchParams } = useFilterNavigation();
+  return (
+    <label className="flex items-center gap-2">
+      <span className="hidden text-sm text-muted sm:inline">Ordenar:</span>
+      <select
+        className="input h-10 w-auto min-w-48 rounded-full"
+        value={searchParams.get('sort') ?? 'newest'}
+        onChange={(e) => update({ sort: e.target.value })}
+        aria-label="Ordenar productos"
+      >
+        {SORTS.map((s) => (
+          <option key={s.value} value={s.value}>
+            {s.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function FilterPanel({ categories }) {
+  const { update, searchParams, clear } = useFilterNavigation();
+  const current = {
+    category: searchParams.get('category') ?? '',
+    minPrice: searchParams.get('minPrice') ?? '',
+    maxPrice: searchParams.get('maxPrice') ?? '',
+    q: searchParams.get('q') ?? '',
+  };
+
+  const [q, setQ] = useState(current.q);
+  const [minPrice, setMinPrice] = useState(current.minPrice);
+  const [maxPrice, setMaxPrice] = useState(current.maxPrice);
+
+  const hasFilters = Boolean(current.category || current.minPrice || current.maxPrice || current.q);
 
   return (
-    <div className="card p-5 sm:p-6">
-      <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
-        <div className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
-            </svg>
-          </span>
-          <h2 className="text-sm font-semibold text-foreground">Filtrar catálogo</h2>
-        </div>
-        {activeCount > 0 && (
-          <span className="badge border-accent/30 text-accent">
-            {activeCount} filtro{activeCount === 1 ? '' : 's'} activo{activeCount === 1 ? '' : 's'}
-          </span>
-        )}
+    <div className="flex flex-col gap-8">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          update({ q: q.trim() });
+        }}
+        className="relative"
+      >
+        <Search size={16} className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-subtle" />
+        <input
+          className="input pl-10"
+          placeholder="Buscar en el catálogo"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          aria-label="Buscar productos"
+        />
+      </form>
+
+      <div>
+        <h3 className="eyebrow mb-3">Categoría</h3>
+        <ul className="flex flex-col gap-0.5">
+          {[{ slug: '', name: 'Todas las categorías' }, ...categories].map((c) => {
+            const active = current.category === c.slug;
+            return (
+              <li key={c.slug || 'all'}>
+                <button
+                  onClick={() => update({ category: c.slug })}
+                  className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+                    active
+                      ? 'bg-surface-hover font-semibold text-foreground'
+                      : 'text-muted hover:bg-surface hover:text-foreground'
+                  }`}
+                  aria-pressed={active}
+                >
+                  {c.name}
+                  {active && <Check size={15} className="text-accent" />}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       </div>
 
-      <form onSubmit={applyFilters} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_1.2fr_1fr_auto]">
-        <div>
-          <label className="label" htmlFor="filter-category">
-            Categoría
-          </label>
-          <select
-            id="filter-category"
-            className="input h-11"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option value="">Todas</option>
-            {categories.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+      <div>
+        <h3 className="eyebrow mb-3">Precio (COP)</h3>
+        <div className="flex flex-wrap gap-2">
+          {PRICE_PRESETS.map((p) => {
+            const active = current.minPrice === p.min && current.maxPrice === p.max;
+            return (
+              <button
+                key={p.label}
+                onClick={() => {
+                  setMinPrice(p.min);
+                  setMaxPrice(p.max);
+                  update(active ? { minPrice: '', maxPrice: '' } : { minPrice: p.min, maxPrice: p.max });
+                }}
+                className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                  active
+                    ? 'border-accent bg-accent/10 text-accent'
+                    : 'border-border text-muted hover:border-border-strong hover:text-foreground'
+                }`}
+              >
+                {p.label}
+              </button>
+            );
+          })}
         </div>
-
-        <div>
-          <label className="label">Rango de precio</label>
-          <div className="flex h-11 items-center gap-2 rounded-xl border border-border bg-background px-3 focus-within:border-accent">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            update({ minPrice, maxPrice });
+          }}
+          className="mt-4 flex flex-col gap-2"
+        >
+          <div className="flex items-center gap-2">
             <input
-              id="filter-min"
               type="number"
               min="0"
               inputMode="numeric"
               aria-label="Precio mínimo"
-              className="w-full bg-transparent text-sm text-foreground placeholder:text-muted focus:outline-none"
+              className="input h-10"
               placeholder="Mín."
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
             />
-            <span className="text-muted">–</span>
+            <span className="text-subtle">–</span>
             <input
-              id="filter-max"
               type="number"
               min="0"
               inputMode="numeric"
               aria-label="Precio máximo"
-              className="w-full bg-transparent text-sm text-foreground placeholder:text-muted focus:outline-none"
+              className="input h-10"
               placeholder="Máx."
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
             />
           </div>
-        </div>
-
-        <div>
-          <label className="label" htmlFor="filter-sort">
-            Ordenar por
-          </label>
-          <select id="filter-sort" className="input h-11" value={sort} onChange={(e) => setSort(e.target.value)}>
-            {SORTS.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex items-end">
-          <button type="submit" className="btn-primary h-11 w-full lg:w-auto lg:px-6">
-            Filtrar
+          <button type="submit" className="btn-secondary h-10">
+            Aplicar precio
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
+
+      {hasFilters && (
+        <button
+          onClick={() => {
+            setQ('');
+            setMinPrice('');
+            setMaxPrice('');
+            clear();
+          }}
+          className="btn-ghost justify-start px-3 text-danger hover:text-danger"
+        >
+          <X size={15} /> Limpiar filtros
+        </button>
+      )}
     </div>
+  );
+}
+
+export default function FilterBar({ categories }) {
+  const searchParams = useSearchParams();
+  const activeCount = ['category', 'minPrice', 'maxPrice', 'q'].filter((k) => searchParams.get(k)).length;
+  // La key reinicia los inputs locales cuando los filtros cambian desde afuera (chips, limpiar, etc.)
+  const key = searchParams.toString();
+
+  return (
+    <>
+      <aside className="hidden lg:block">
+        <div className="sticky top-24">
+          <FilterPanel key={key} categories={categories} />
+        </div>
+      </aside>
+
+      <details className="group card lg:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold">
+          <span className="flex items-center gap-2">
+            <SlidersHorizontal size={16} /> Filtros
+            {activeCount > 0 && <span className="badge-accent">{activeCount}</span>}
+          </span>
+          <span className="text-xs text-muted group-open:hidden">Mostrar</span>
+          <span className="hidden text-xs text-muted group-open:inline">Ocultar</span>
+        </summary>
+        <div className="border-t border-border p-4">
+          <FilterPanel key={key} categories={categories} />
+        </div>
+      </details>
+    </>
   );
 }

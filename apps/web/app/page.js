@@ -1,70 +1,516 @@
 import Link from 'next/link';
+import {
+  ArrowRight,
+  BadgeCheck,
+  Bell,
+  CalendarClock,
+  QrCode,
+  ScanLine,
+  ShieldCheck,
+  Smartphone,
+  Sparkles,
+  Truck,
+} from 'lucide-react';
 import { apiFetch } from '@/lib/api';
+import { categoryIcon } from '@/lib/categories';
+import { formatCOP, formatDate, formatNumber } from '@/lib/format';
 import ProductGrid from '@/components/ProductGrid';
-import { formatDate } from '@/lib/format';
+import SectionHeading from '@/components/SectionHeading';
+import Countdown from '@/components/Countdown';
 
-async function getFeatured() {
-  const [{ items: products }, drops] = await Promise.all([
-    apiFetch('/api/products?limit=4'),
-    apiFetch('/api/drops?status=scheduled'),
+// Stock, drops y listas de espera cambian a cada rato: se renderiza en cada visita, nunca en el build
+export const dynamic = 'force-dynamic';
+
+async function getHomeData() {
+  const [{ items: products, total }, drops, { items: categories }] = await Promise.all([
+    apiFetch('/api/products?limit=8'),
+    apiFetch('/api/drops'),
+    apiFetch('/api/categories'),
   ]);
-  return { products, drops: drops.slice(0, 2) };
+
+  // Una consulta liviana por categoría para mostrar cuántos productos tiene y una foto de portada
+  const categoryData = await Promise.all(
+    categories.map(async (c) => {
+      const res = await apiFetch(`/api/products?category=${encodeURIComponent(c.slug)}&limit=1`);
+      return { ...c, count: res.total, coverUrl: res.items[0]?.coverUrl ?? null };
+    }),
+  );
+
+  const activeDrops = drops
+    .filter((d) => ['live', 'scheduled'].includes(d.status))
+    .sort((a, b) => new Date(a.launchAt) - new Date(b.launchAt));
+
+  return {
+    products,
+    total,
+    categories: categoryData.filter((c) => c.count > 0).sort((a, b) => b.count - a.count),
+    liveDrop: activeDrops.find((d) => d.status === 'live') ?? null,
+    nextDrop: activeDrops.find((d) => d.status === 'scheduled') ?? null,
+    activeDrops,
+  };
+}
+
+const TRUST = [
+  { icon: ShieldCheck, title: 'Autenticidad verificada', text: 'Código NVP único por producto' },
+  { icon: Sparkles, title: 'Asistente con IA', text: 'Solo recomienda stock real' },
+  { icon: CalendarClock, title: 'Drops exclusivos', text: 'Lista de espera y alertas' },
+  { icon: Truck, title: 'Envíos nacionales', text: 'Sigue tu pedido en tu cuenta' },
+];
+
+const AI_SUGGESTIONS = ['Cargador rápido bajo $100.000', 'Algo para jugar en la TV', 'Power bank para viajar'];
+
+function HeroVisual({ products }) {
+  const [main, second, third] = products;
+  if (!main) return null;
+
+  return (
+    <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
+      <div className="grid aspect-[6/5] grid-cols-5 grid-rows-2 gap-3 sm:gap-4">
+        <Link href={`/products/${main.slug}`} className="product-tile group col-span-3 row-span-2 rounded-3xl">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={main.coverUrl}
+            alt={main.name}
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        </Link>
+        {[second, third].filter(Boolean).map((p) => (
+          <Link key={p.id} href={`/products/${p.slug}`} className="product-tile group col-span-2 rounded-3xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={p.coverUrl}
+              alt={p.name}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          </Link>
+        ))}
+      </div>
+
+      {/* Certificado flotante */}
+      <div className="absolute -bottom-6 left-3 w-[min(19rem,85%)] animate-fade-up rounded-2xl border border-border-strong bg-background/90 p-4 shadow-2xl shadow-black/70 backdrop-blur-xl sm:-left-6">
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-live/15 text-live">
+            <BadgeCheck size={22} />
+          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold">Certificado NOVA</p>
+            <p className="truncate font-mono text-xs text-muted">{main.authenticityCode}</p>
+          </div>
+        </div>
+        <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-xs">
+          <span className="truncate pr-2 text-muted">{main.name}</span>
+          <span className="badge-live shrink-0">Activo</span>
+        </div>
+      </div>
+
+      {/* Chip del asistente */}
+      <div
+        className="absolute -top-4 right-3 hidden animate-fade-up items-center gap-2 rounded-full border border-border-strong bg-background/90 py-2 pr-4 pl-2 text-xs shadow-xl backdrop-blur-xl sm:flex"
+        style={{ animationDelay: '150ms' }}
+      >
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-accent-foreground">
+          <Sparkles size={14} />
+        </span>
+        <span className="text-muted">
+          IA: <span className="text-foreground">solo productos reales</span>
+        </span>
+      </div>
+    </div>
+  );
 }
 
 export default async function HomePage() {
-  const { products, drops } = await getFeatured();
+  const { products, total, categories, liveDrop, nextDrop, activeDrops } = await getHomeData();
+  const spotlightDrop = liveDrop ?? nextDrop;
 
   return (
     <div>
-      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-        <div className="max-w-2xl">
-          <span className="badge">Autenticidad · IA · Drops</span>
-          <h1 className="mt-4 text-4xl font-bold sm:text-5xl">
-            Sneakers y tecnología urbana, sin dudas de que son originales.
-          </h1>
-          <p className="mt-4 text-lg text-muted">
-            NOVA verifica cada producto con un código de autenticidad único, te recomienda con un asistente de IA
-            que solo conoce el catálogo real, y te avisa antes que nadie de los próximos drops.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/catalog" className="btn-primary">
-              Ver catálogo
-            </Link>
-            <Link href="/search" className="btn-secondary">
-              Probar el buscador IA
-            </Link>
+      {/* ================= HERO ================= */}
+      <section className="relative overflow-hidden border-b border-border">
+        <div className="bg-grid mask-fade pointer-events-none absolute inset-0" />
+        <div className="glow-accent pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2" />
+
+        <div className="container-page relative grid items-center gap-16 py-14 sm:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-12 lg:py-24">
+          <div className="animate-fade-up">
+            {liveDrop ? (
+              <Link href={`/drops/${liveDrop.slug}`} className="badge-live group py-1.5 pr-3 pl-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-live" />
+                </span>
+                Drop en vivo: {liveDrop.name}
+                <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            ) : (
+              <span className="badge-accent py-1.5">
+                <Sparkles size={13} /> Autenticidad · IA · Drops
+              </span>
+            )}
+
+            <h1 className="display mt-6 text-[2.75rem] leading-[0.95] sm:text-6xl lg:text-7xl">
+              Original
+              <br />o no es <span className="text-accent">NOVA.</span>
+            </h1>
+
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
+              Sneakers y tecnología urbana con un código de autenticidad único en cada producto. Encuentra lo que buscas
+              con nuestro asistente de IA y entérate antes que nadie de los próximos drops.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/catalog" className="btn-primary h-12 px-7 text-[15px]">
+                Explorar catálogo <ArrowRight size={18} />
+              </Link>
+              <Link href="/search" className="btn-secondary h-12 px-7 text-[15px]">
+                <Sparkles size={17} className="text-accent" /> Pregúntale a la IA
+              </Link>
+            </div>
+
+            <dl className="mt-12 grid max-w-lg grid-cols-3 divide-x divide-border border-t border-border pt-6">
+              <div className="pr-4">
+                <dt className="eyebrow">Productos</dt>
+                <dd className="mt-1.5 font-display text-2xl font-semibold sm:text-3xl">{formatNumber(total)}</dd>
+              </div>
+              <div className="px-4">
+                <dt className="eyebrow">Con código</dt>
+                <dd className="mt-1.5 font-display text-2xl font-semibold sm:text-3xl">100%</dd>
+              </div>
+              <div className="pl-4">
+                <dt className="eyebrow">Drops activos</dt>
+                <dd className="mt-1.5 font-display text-2xl font-semibold sm:text-3xl">{activeDrops.length}</dd>
+              </div>
+            </dl>
           </div>
+
+          <HeroVisual products={products} />
         </div>
       </section>
 
-      {drops.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Próximos drops</h2>
-            <Link href="/drops" className="text-sm text-accent underline">
-              Ver todos
-            </Link>
-          </div>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            {drops.map((drop) => (
-              <Link key={drop.id} href={`/drops/${drop.slug}`} className="card p-5">
-                <h3 className="text-xl font-bold">{drop.name}</h3>
-                <p className="mt-1 text-sm text-muted">{formatDate(drop.launchAt)}</p>
-              </Link>
-            ))}
+      {/* ================= FRANJA DE CONFIANZA ================= */}
+      <section className="border-b border-border bg-surface/40">
+        <div className="container-page grid grid-cols-2 gap-x-6 gap-y-6 py-8 lg:grid-cols-4">
+          {TRUST.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="flex items-center gap-3.5">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-background text-accent">
+                <Icon size={20} />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted sm:text-sm">{text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= CATEGORÍAS ================= */}
+      {categories.length > 0 && (
+        <section className="container-page pt-20 lg:pt-28">
+          <SectionHeading
+            eyebrow="01 — Categorías"
+            title="Explora por categoría"
+            description="Todo el catálogo organizado para que llegues directo a lo que necesitas."
+            href="/catalog"
+            linkLabel="Ver catálogo"
+          />
+          <div
+            className={`mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 ${
+              categories.slice(0, 8).length % 3 === 0 && categories.length < 8 ? '' : 'lg:grid-cols-4'
+            }`}
+          >
+            {categories.slice(0, 8).map((c) => {
+              const Icon = categoryIcon(c);
+              return (
+                <Link
+                  key={c.slug}
+                  href={`/catalog?category=${c.slug}`}
+                  className="group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-2xl border border-border bg-surface p-4 sm:p-5"
+                >
+                  {c.coverUrl && (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={c.coverUrl}
+                        alt=""
+                        className="absolute inset-0 h-full w-full object-cover opacity-50 transition-all duration-700 group-hover:scale-105 group-hover:opacity-70"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/10" />
+                    </>
+                  )}
+                  <span className="absolute top-4 left-4 flex h-9 w-9 items-center justify-center rounded-lg bg-black/60 text-accent backdrop-blur sm:top-5 sm:left-5">
+                    <Icon size={18} />
+                  </span>
+                  <div className="relative flex items-end justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="line-clamp-2 font-display text-sm leading-tight font-semibold tracking-tight text-white sm:text-lg">
+                        {c.name}
+                      </h3>
+                      <p className="font-mono text-[11px] text-white/60">
+                        {c.count} producto{c.count === 1 ? '' : 's'}
+                      </p>
+                    </div>
+                    <ArrowRight
+                      size={18}
+                      className="shrink-0 text-white/70 transition-all group-hover:translate-x-1 group-hover:text-accent"
+                    />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}
 
-      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Destacados</h2>
-          <Link href="/catalog" className="text-sm text-accent underline">
-            Ver catálogo
-          </Link>
+      {/* ================= RECIÉN LLEGADOS ================= */}
+      <section className="container-page pt-20 lg:pt-28">
+        <SectionHeading
+          eyebrow="02 — Recién llegados"
+          title="Lo último en NOVA"
+          description="Cada uno con su certificado de autenticidad listo para validar."
+          href="/catalog"
+        />
+        <div className="mt-10">
+          <ProductGrid products={products} emptyAction={false} />
         </div>
-        <div className="mt-6">
-          <ProductGrid products={products} />
+      </section>
+
+      {/* ================= POR QUÉ NOVA ================= */}
+      <section className="container-page pt-20 lg:pt-28">
+        <SectionHeading eyebrow="03 — Por qué NOVA" title="Tres razones para comprar sin dudas" />
+
+        <div className="mt-10 grid gap-4 lg:grid-cols-3">
+          {/* Autenticidad */}
+          <div className="card flex flex-col p-6 sm:p-8">
+            <span className="font-mono text-xs text-subtle">01</span>
+            <h3 className="display mt-4 text-xl">Autenticidad verificada</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Cada producto trae un código único. Valídalo en su ficha o escanéalo con la app para confirmar que es
+              original y está activo.
+            </p>
+            <div className="mt-auto pt-8">
+              <div className="rounded-xl border border-border bg-background p-3">
+                <div className="flex items-center gap-2">
+                  <span className="flex-1 truncate rounded-lg border border-border px-3 py-2 font-mono text-xs text-muted">
+                    {products[0]?.authenticityCode ?? 'NVP-XXXXXXXX'}
+                  </span>
+                  <span className="rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground">
+                    Validar
+                  </span>
+                </div>
+                <p className="mt-3 flex items-center gap-2 text-xs font-medium text-live">
+                  <BadgeCheck size={15} /> Código auténtico y activo
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* IA */}
+          <div className="card flex flex-col p-6 sm:p-8">
+            <span className="font-mono text-xs text-subtle">02</span>
+            <h3 className="display mt-4 text-xl">Asistente de compras IA</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Escribe lo que necesitas en tus palabras. La IA solo consulta el catálogo real: nunca inventa productos,
+              precios ni stock.
+            </p>
+            <div className="mt-auto flex flex-col gap-2 pt-8 text-xs">
+              <span className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-accent px-3.5 py-2.5 font-medium text-accent-foreground">
+                Busco un power bank para viajar
+              </span>
+              <span className="max-w-[90%] rounded-2xl rounded-bl-md border border-border bg-background px-3.5 py-2.5 text-muted">
+                Encontré opciones con stock real.{' '}
+                {products[0] && (
+                  <span className="text-foreground">
+                    {products[0].name} · {formatCOP(products[0].priceCents)}
+                  </span>
+                )}
+              </span>
+            </div>
+          </div>
+
+          {/* Drops */}
+          <div className="card flex flex-col p-6 sm:p-8">
+            <span className="font-mono text-xs text-subtle">03</span>
+            <h3 className="display mt-4 text-xl">Drops con lista de espera</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Lanzamientos limitados con cupos. Únete a la lista de espera y recibe la alerta en tu celular cuando
+              abran.
+            </p>
+            <div className="mt-auto pt-8">
+              {nextDrop ? (
+                <Link
+                  href={`/drops/${nextDrop.slug}`}
+                  className="block rounded-xl border border-border bg-background p-4"
+                >
+                  <p className="flex items-center justify-between gap-2 text-xs">
+                    <span className="truncate font-semibold">{nextDrop.name}</span>
+                    <span className="badge shrink-0">
+                      <Bell size={12} /> {nextDrop.waitlistCount}
+                    </span>
+                  </p>
+                  <div className="mt-3">
+                    <Countdown target={nextDrop.launchAt} />
+                  </div>
+                </Link>
+              ) : (
+                <Link href="/drops" className="btn-secondary w-full">
+                  Ver calendario de drops
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= DROP DESTACADO ================= */}
+      {spotlightDrop && (
+        <section className="container-page pt-20 lg:pt-28">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-surface">
+            <div className="bg-dots pointer-events-none absolute inset-0 opacity-60" />
+            <div className="relative grid lg:grid-cols-2">
+              <div className="product-tile m-2 aspect-[4/3] rounded-[20px] lg:m-3 lg:aspect-auto lg:min-h-[400px]">
+                {spotlightDrop.coverUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={spotlightDrop.coverUrl}
+                    alt={spotlightDrop.name}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center font-display text-4xl font-bold text-black/15">
+                    NOVA DROP
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col justify-center p-6 sm:p-10">
+                {spotlightDrop.status === 'live' ? (
+                  <span className="badge-live w-fit">● En vivo ahora</span>
+                ) : (
+                  <span className="badge-accent w-fit">
+                    <CalendarClock size={13} /> Próximo drop
+                  </span>
+                )}
+                <h2 className="display mt-5 text-3xl sm:text-4xl">{spotlightDrop.name}</h2>
+                {spotlightDrop.description && (
+                  <p className="mt-4 line-clamp-3 leading-relaxed text-muted">{spotlightDrop.description}</p>
+                )}
+                <p className="mt-4 font-mono text-xs text-subtle uppercase tracking-[0.14em]">
+                  {formatDate(spotlightDrop.launchAt)} · {spotlightDrop.waitlistCount} en lista de espera
+                </p>
+                {spotlightDrop.status === 'scheduled' && (
+                  <div className="mt-8">
+                    <Countdown target={spotlightDrop.launchAt} size="lg" />
+                  </div>
+                )}
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <Link href={`/drops/${spotlightDrop.slug}`} className="btn-primary">
+                    {spotlightDrop.status === 'live' ? 'Ver productos del drop' : 'Unirme a la lista de espera'}
+                    <ArrowRight size={17} />
+                  </Link>
+                  <Link href="/drops" className="btn-secondary">
+                    Todos los drops
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ================= ASISTENTE IA ================= */}
+      <section className="container-page pt-20 lg:pt-28">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-surface-2 via-surface to-background px-6 py-12 sm:px-12 sm:py-16">
+          <div className="glow-accent pointer-events-none absolute -top-48 left-1/2 h-[420px] w-[720px] -translate-x-1/2" />
+          <div className="relative mx-auto max-w-2xl text-center">
+            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
+              <Sparkles size={22} />
+            </span>
+            <h2 className="display mt-6 text-3xl sm:text-4xl">¿No sabes qué buscar? Pregúntale a NOVA.</h2>
+            <p className="mt-4 text-muted">
+              Describe lo que necesitas y tu presupuesto. Te mostramos productos reales con precio y stock actualizados.
+            </p>
+            <form action="/search" className="mx-auto mt-8 flex max-w-xl flex-col gap-2 sm:flex-row">
+              <input
+                name="q"
+                required
+                className="input h-12 rounded-full px-5"
+                placeholder="Ej: audífonos para correr bajo $80.000"
+                aria-label="Pregunta para el asistente"
+              />
+              <button type="submit" className="btn-primary h-12 shrink-0">
+                Preguntar <ArrowRight size={17} />
+              </button>
+            </form>
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              {AI_SUGGESTIONS.map((s) => (
+                <Link
+                  key={s}
+                  href={`/search?q=${encodeURIComponent(s)}`}
+                  className="badge transition-colors hover:border-border-strong hover:text-foreground"
+                >
+                  {s}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= APP MÓVIL ================= */}
+      <section className="container-page pt-20 lg:pt-28">
+        <div className="grid items-center gap-10 overflow-hidden rounded-3xl border border-border bg-surface p-6 sm:p-10 lg:grid-cols-2 lg:p-14">
+          <div>
+            <p className="eyebrow">App NOVA para Android</p>
+            <h2 className="display mt-4 text-3xl sm:text-4xl">Verifica en la calle, no solo en la web.</h2>
+            <ul className="mt-8 flex flex-col gap-4">
+              {[
+                [ScanLine, 'Escanea el QR del producto y valida su autenticidad al instante'],
+                [Bell, 'Recibe una notificación cuando se anuncie un nuevo drop'],
+                [Smartphone, 'Tu misma cuenta, pedidos y reseñas que en la web'],
+              ].map(([Icon, text]) => (
+                <li key={text} className="flex items-start gap-3 text-sm text-muted">
+                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
+                    <Icon size={15} />
+                  </span>
+                  {text}
+                </li>
+              ))}
+            </ul>
+            <Link href="/download" className="btn-primary mt-10">
+              Descargar la app <ArrowRight size={17} />
+            </Link>
+          </div>
+
+          {/* Mockup de teléfono */}
+          <div className="relative mx-auto">
+            <div className="glow-accent pointer-events-none absolute inset-0 scale-150" />
+            <div className="relative w-64 rounded-[2.5rem] border-[6px] border-surface-hover bg-background p-3 shadow-2xl shadow-black">
+              <div className="mx-auto mb-4 h-5 w-24 rounded-full bg-surface-hover" />
+              <p className="text-center font-mono text-[10px] uppercase tracking-[0.2em] text-subtle">
+                Escanear código
+              </p>
+              <div className="relative mx-auto mt-4 flex aspect-square w-44 items-center justify-center rounded-2xl border border-border bg-surface">
+                <QrCode size={96} strokeWidth={1.2} className="text-foreground/80" />
+                <span className="absolute inset-x-4 top-1/2 h-0.5 bg-accent shadow-[0_0_16px_2px_rgba(212,255,63,0.7)]" />
+                {[
+                  'top-2 left-2 border-t-2 border-l-2',
+                  'top-2 right-2 border-t-2 border-r-2',
+                  'bottom-2 left-2 border-b-2 border-l-2',
+                  'right-2 bottom-2 border-r-2 border-b-2',
+                ].map((pos) => (
+                  <span key={pos} className={`absolute h-6 w-6 rounded-sm border-accent ${pos}`} />
+                ))}
+              </div>
+              <div className="mt-5 rounded-2xl border border-live/30 bg-live/10 p-3">
+                <p className="flex items-center gap-2 text-xs font-semibold text-live">
+                  <BadgeCheck size={16} /> Producto original
+                </p>
+                <p className="mt-1 truncate font-mono text-[10px] text-muted">
+                  {products[0]?.authenticityCode ?? 'NVP-XXXXXXXX'}
+                </p>
+              </div>
+              <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-surface-hover" />
+            </div>
+          </div>
         </div>
       </section>
     </div>

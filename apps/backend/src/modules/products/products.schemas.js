@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+// URL completa (https://...) o ruta servida por la web desde /public (ej. /products/foto.jpg)
+const imageUrl = z
+  .string()
+  .trim()
+  .refine((v) => v.startsWith('/') || URL.canParse(v), 'Debe ser una URL válida o una ruta que empiece por /');
+
 export const listProductsQuerySchema = z
   .object({
     category: z.string().trim().toLowerCase().optional(),
@@ -20,7 +26,7 @@ export const productIdParamSchema = z.object({
 });
 
 const image = z.object({
-  url: z.url(),
+  url: imageUrl,
   altText: z.string().max(200).optional(),
 });
 

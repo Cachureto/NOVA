@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import ProductForm from '@/components/admin/ProductForm';
+import AdminHeader from '@/components/admin/AdminHeader';
 
 export default function NewProductPage() {
   const [categories, setCategories] = useState(null);
@@ -11,11 +12,15 @@ export default function NewProductPage() {
     apiFetch('/api/categories').then((r) => setCategories(r.items));
   }, []);
 
-  if (!categories) return null;
+  if (!categories) return <div className="skeleton h-96 max-w-3xl" />;
 
   return (
     <div>
-      <h2 className="mb-6 text-xl font-bold">Nuevo producto</h2>
+      <AdminHeader
+        title="Nuevo producto"
+        description="Completa la ficha y asigna su código de autenticidad."
+        backHref="/admin/products"
+      />
       <ProductForm categories={categories} />
     </div>
   );

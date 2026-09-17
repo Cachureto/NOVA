@@ -46,7 +46,12 @@ export async function listProducts({ category, minPrice, maxPrice, q, sort, page
     const words = q.split(/\s+/).filter(Boolean);
     if (words.length) {
       const orTsQuery = words.map((w) => `plainto_tsquery('spanish', immutable_unaccent(${push(w)}))`).join(' || ');
-      conditions.push(`vc.search_vector @@ (${orTsQuery})`);
+      // Coincidencia parcial en el nombre para palabras de 4+ letras ("carga" encuentra "Cargador"),
+      // porque el stemming en español no une palabras de la misma familia.
+      const nameMatches = words
+        .filter((w) => w.length >= 4)
+        .map((w) => `immutable_unaccent(vc.name) ILIKE '%' || immutable_unaccent(${push(w.replace(/[\\%_]/g, '\\$&'))}) || '%'`);
+      conditions.push(`(vc.search_vector @@ (${orTsQuery})${nameMatches.map((m) => ` OR ${m}`).join('')})`);
     }
   }
 

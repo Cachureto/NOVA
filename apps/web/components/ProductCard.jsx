@@ -1,34 +1,79 @@
 import Link from 'next/link';
+import { ArrowUpRight, BadgeCheck } from 'lucide-react';
 import { formatCOP } from '@/lib/format';
+import StarRating from './StarRating';
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, priority = false }) {
   const outOfStock = product.stock <= 0;
+  const lowStock = !outOfStock && product.stock <= 5;
+  const verified = product.authenticityStatus ? product.authenticityStatus === 'active' : true;
 
   return (
-    <Link href={`/products/${product.slug}`} className="card group flex flex-col overflow-hidden">
-      <div className="aspect-square w-full overflow-hidden bg-surface-hover">
+    <Link
+      href={`/products/${product.slug}`}
+      className="group flex flex-col rounded-2xl border border-border bg-surface p-2 transition-all duration-300 hover:-translate-y-1 hover:border-border-strong hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.8)]"
+    >
+      <div className="product-tile aspect-square w-full">
         {product.coverUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={product.coverUrl}
             alt={product.name}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            loading={priority ? 'eager' : 'lazy'}
+            className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] ${
+              outOfStock ? 'opacity-60 grayscale' : ''
+            }`}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-sm text-muted">Sin imagen</div>
+          <div className="flex h-full w-full items-center justify-center font-display text-2xl font-bold text-black/15">
+            NOVA
+          </div>
         )}
-      </div>
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <span className="text-xs uppercase tracking-wide text-muted">{product.category?.name}</span>
-        <h3 className="line-clamp-2 font-semibold">{product.name}</h3>
-        <div className="mt-auto flex items-center justify-between pt-2">
-          <span className="text-lg font-bold">{formatCOP(product.priceCents)}</span>
-          {outOfStock ? (
-            <span className="badge text-danger border-danger/40">Agotado</span>
+
+        <div className="absolute inset-x-2 top-2 flex items-start justify-between gap-2">
+          {verified ? (
+            <span
+              title="Autenticidad verificada"
+              className="inline-flex items-center gap-1 rounded-full bg-black/75 px-2 py-1 text-[11px] font-semibold text-white backdrop-blur"
+            >
+              <BadgeCheck size={13} className="text-live" />
+              <span className="hidden sm:inline">Verificado</span>
+            </span>
           ) : (
-            <span className="badge text-live border-live/30">Stock: {product.stock}</span>
+            <span />
+          )}
+          {outOfStock ? (
+            <span className="rounded-full bg-black/75 px-2 py-1 text-[11px] font-semibold text-danger backdrop-blur">
+              Agotado
+            </span>
+          ) : lowStock ? (
+            <span className="rounded-full bg-black/75 px-2 py-1 text-[11px] font-semibold text-warning backdrop-blur">
+              Últimas {product.stock}
+            </span>
+          ) : null}
+        </div>
+
+        <span className="absolute right-2 bottom-2 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-accent text-accent-foreground opacity-0 shadow-lg transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <ArrowUpRight size={18} />
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col gap-1.5 px-2 pt-3.5 pb-2">
+        <div className="flex items-center justify-between gap-2">
+          <span className="truncate font-mono text-[10px] uppercase tracking-[0.16em] text-subtle">
+            {product.brand || product.category?.name || 'NOVA'}
+          </span>
+          {product.reviewCount > 0 && (
+            <span className="flex items-center gap-1 text-[11px] text-muted">
+              <StarRating value={product.rating} size={11} />
+              <span className="font-mono">({product.reviewCount})</span>
+            </span>
           )}
         </div>
+        <h3 className="line-clamp-2 text-[15px] leading-snug font-medium text-foreground">{product.name}</h3>
+        <p className="mt-auto pt-2 font-display text-lg font-semibold tracking-tight">
+          {formatCOP(product.priceCents)}
+        </p>
       </div>
     </Link>
   );

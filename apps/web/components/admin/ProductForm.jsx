@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ImageOff, LoaderCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { apiFetch } from '@/lib/api';
+import { formatCOP } from '@/lib/format';
 
 export default function ProductForm({ categories, initial }) {
   const { accessToken } = useAuth();
@@ -53,101 +55,147 @@ export default function ProductForm({ categories, initial }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card flex max-w-2xl flex-col gap-4 p-6">
-      <div>
-        <label className="label" htmlFor="name">
-          Nombre
-        </label>
-        <input id="name" className="input" required value={name} onChange={(e) => setName(e.target.value)} />
-      </div>
-      <div>
-        <label className="label" htmlFor="slug">
-          Slug
-        </label>
-        <input id="slug" className="input font-mono" required value={slug} onChange={(e) => setSlug(e.target.value)} />
-      </div>
-      <div>
-        <label className="label" htmlFor="category">
-          Categoría
-        </label>
-        <select id="category" className="input" value={categorySlug} onChange={(e) => setCategorySlug(e.target.value)}>
-          {categories.map((c) => (
-            <option key={c.slug} value={c.slug}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label className="label" htmlFor="brand">
-          Marca (opcional)
-        </label>
-        <input id="brand" className="input" value={brand} onChange={(e) => setBrand(e.target.value)} />
-      </div>
-      <div>
-        <label className="label" htmlFor="description">
-          Descripción
-        </label>
-        <textarea
-          id="description"
-          className="input min-h-24"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="label" htmlFor="price">
-            Precio (COP)
-          </label>
-          <input
-            id="price"
-            type="number"
-            min="0"
-            className="input"
-            required
-            value={priceCents}
-            onChange={(e) => setPriceCents(e.target.value)}
-          />
+    <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
+      <div className="card flex flex-col gap-5 p-6 sm:p-8">
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label className="label" htmlFor="name">
+              Nombre
+            </label>
+            <input id="name" className="input" required value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <div>
+            <label className="label" htmlFor="slug">
+              Slug
+            </label>
+            <input
+              id="slug"
+              className="input font-mono"
+              required
+              placeholder="nombre-del-producto"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="category">
+              Categoría
+            </label>
+            <select
+              id="category"
+              className="input"
+              value={categorySlug}
+              onChange={(e) => setCategorySlug(e.target.value)}
+            >
+              {categories.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="label" htmlFor="brand">
+              Marca <span className="text-subtle">(opcional)</span>
+            </label>
+            <input id="brand" className="input" value={brand} onChange={(e) => setBrand(e.target.value)} />
+          </div>
         </div>
         <div>
-          <label className="label" htmlFor="stock">
-            Stock
+          <label className="label" htmlFor="description">
+            Descripción
           </label>
-          <input
-            id="stock"
-            type="number"
-            min="0"
-            className="input"
-            required
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
+          <textarea
+            id="description"
+            className="input min-h-28"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label className="label" htmlFor="price">
+              Precio (COP)
+            </label>
+            <input
+              id="price"
+              type="number"
+              min="0"
+              className="input"
+              required
+              value={priceCents}
+              onChange={(e) => setPriceCents(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="stock">
+              Stock
+            </label>
+            <input
+              id="stock"
+              type="number"
+              min="0"
+              className="input"
+              required
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+            />
+          </div>
+        </div>
+        <div>
+          <label className="label" htmlFor="authenticityCode">
+            Código de autenticidad
+          </label>
+          <input
+            id="authenticityCode"
+            className="input font-mono uppercase"
+            required
+            placeholder="NVP-XXXXXXXX"
+            value={authenticityCode}
+            onChange={(e) => setAuthenticityCode(e.target.value.toUpperCase())}
+          />
+          <p className="mt-2 text-xs text-subtle">Formato NVP- seguido de al menos 8 letras, números o guiones.</p>
+        </div>
+        <div>
+          <label className="label" htmlFor="imageUrl">
+            URL de imagen <span className="text-subtle">(opcional)</span>
+          </label>
+          <input
+            id="imageUrl"
+            className="input"
+            placeholder="https://…"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+          />
+        </div>
+        {error && <div className="alert-error">{error}</div>}
+        <button type="submit" className="btn-primary self-start" disabled={submitting}>
+          {submitting && <LoaderCircle size={17} className="animate-spin" />}
+          {submitting ? 'Guardando…' : isEdit ? 'Guardar cambios' : 'Crear producto'}
+        </button>
       </div>
-      <div>
-        <label className="label" htmlFor="authenticityCode">
-          Código de autenticidad
-        </label>
-        <input
-          id="authenticityCode"
-          className="input font-mono"
-          required
-          placeholder="NVP-XXXXXXXX"
-          value={authenticityCode}
-          onChange={(e) => setAuthenticityCode(e.target.value)}
-        />
-      </div>
-      <div>
-        <label className="label" htmlFor="imageUrl">
-          URL de imagen (opcional)
-        </label>
-        <input id="imageUrl" className="input" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
-      </div>
-      {error && <p className="text-sm text-danger">{error}</p>}
-      <button type="submit" className="btn-primary self-start" disabled={submitting}>
-        {submitting ? 'Guardando…' : isEdit ? 'Guardar cambios' : 'Crear producto'}
-      </button>
+
+      <aside className="card p-4 lg:sticky lg:top-24">
+        <p className="eyebrow mb-3 px-1">Vista previa</p>
+        <div className="product-tile aspect-square">
+          {imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          ) : (
+            <div className="flex h-full items-center justify-center text-black/30">
+              <ImageOff size={32} />
+            </div>
+          )}
+        </div>
+        <div className="px-1 pt-4 pb-1">
+          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-subtle">
+            {brand || categories.find((c) => c.slug === categorySlug)?.name || 'NOVA'}
+          </p>
+          <p className="mt-1 font-medium">{name || 'Nombre del producto'}</p>
+          <p className="mt-2 font-display text-lg font-semibold">{formatCOP(Number(priceCents) || 0)}</p>
+          <p className="mt-2 truncate font-mono text-xs text-muted">{authenticityCode || 'NVP-XXXXXXXX'}</p>
+        </div>
+      </aside>
     </form>
   );
 }

@@ -3,7 +3,10 @@
 import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { CircleAlert, LoaderCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
+import AuthShell from '@/components/AuthShell';
+import PasswordInput from '@/components/PasswordInput';
 
 function LoginForm() {
   const { login, user } = useAuth();
@@ -32,45 +35,58 @@ function LoginForm() {
   }
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-6 px-4 py-16 sm:px-6">
-      <div>
-        <h1 className="text-3xl font-bold">Ingresa a NOVA</h1>
-        <p className="mt-2 text-muted">Accede con tu cuenta para comprar, dejar reseñas y unirte a los drops.</p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="card flex flex-col gap-4 p-6">
+    <AuthShell
+      eyebrow="Bienvenido de vuelta"
+      title="Ingresa a NOVA"
+      description="Accede para comprar, dejar reseñas y unirte a los drops."
+      footer={
+        <>
+          ¿No tienes cuenta?{' '}
+          <Link href={`/register${next !== '/' ? `?next=${encodeURIComponent(next)}` : ''}`} className="link">
+            Crea una gratis
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div>
           <label className="label" htmlFor="email">
             Email
           </label>
-          <input id="email" type="email" required className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input
+            id="email"
+            type="email"
+            required
+            autoComplete="email"
+            className="input"
+            placeholder="tu@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div>
           <label className="label" htmlFor="password">
             Contraseña
           </label>
-          <input
+          <PasswordInput
             id="password"
-            type="password"
-            required
-            className="input"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        {error && <p className="text-sm text-danger">{error}</p>}
-        <button type="submit" className="btn-primary" disabled={loading}>
+        {error && (
+          <div className="alert-error" role="alert">
+            <CircleAlert size={18} className="shrink-0" />
+            {error}
+          </div>
+        )}
+        <button type="submit" className="btn-primary h-12 text-[15px]" disabled={loading}>
+          {loading && <LoaderCircle size={18} className="animate-spin" />}
           {loading ? 'Ingresando…' : 'Ingresar'}
         </button>
       </form>
-
-      <p className="text-center text-sm text-muted">
-        ¿No tienes cuenta?{' '}
-        <Link href="/register" className="text-accent underline">
-          Crea una aquí
-        </Link>
-      </p>
-    </div>
+    </AuthShell>
   );
 }
 

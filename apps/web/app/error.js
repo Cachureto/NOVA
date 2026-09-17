@@ -1,12 +1,17 @@
 'use client';
 
+import { RotateCcw, TriangleAlert } from 'lucide-react';
+
 export default function Error({ error, reset }) {
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-4 py-24 text-center">
-      <h1 className="text-2xl font-bold">Algo salió mal</h1>
-      <p className="text-muted">{error?.message ?? 'No pudimos cargar esta página.'}</p>
-      <button className="btn-primary" onClick={() => reset()}>
-        Reintentar
+    <div className="container-page flex max-w-lg flex-col items-center py-28 text-center">
+      <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-danger/10 text-danger">
+        <TriangleAlert size={26} />
+      </span>
+      <h1 className="display mt-6 text-3xl">Algo salió mal</h1>
+      <p className="mt-3 text-muted">{error?.message ?? 'No pudimos cargar esta página.'}</p>
+      <button className="btn-primary mt-8" onClick={() => reset()}>
+        <RotateCcw size={16} /> Reintentar
       </button>
     </div>
   );

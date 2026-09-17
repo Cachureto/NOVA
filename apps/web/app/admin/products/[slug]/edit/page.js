@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { apiFetch } from '@/lib/api';
 import ProductForm from '@/components/admin/ProductForm';
+import AdminHeader from '@/components/admin/AdminHeader';
 
 export default function EditProductPage() {
   const { slug } = useParams();
@@ -20,12 +21,12 @@ export default function EditProductPage() {
       .catch((err) => setError(err.message));
   }, [slug]);
 
-  if (error) return <p className="text-danger">{error}</p>;
-  if (!categories || !product) return null;
+  if (error) return <div className="alert-error">{error}</div>;
+  if (!categories || !product) return <div className="skeleton h-96 max-w-3xl" />;
 
   return (
     <div>
-      <h2 className="mb-6 text-xl font-bold">Editar producto</h2>
+      <AdminHeader title="Editar producto" description={product.name} backHref="/admin/products" />
       <ProductForm categories={categories} initial={product} />
     </div>
   );
