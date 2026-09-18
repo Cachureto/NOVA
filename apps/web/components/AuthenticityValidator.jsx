@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { BadgeCheck, Check, Copy, LoaderCircle, ShieldAlert, ShieldCheck, ShieldX } from 'lucide-react';
-import { apiFetch } from '@/lib/api';
+import { API_URL, apiFetch } from '@/lib/api';
 
 const RESULTS = {
   valid: {
@@ -84,6 +84,26 @@ export default function AuthenticityValidator({ defaultCode }) {
             </p>
           </div>
         </div>
+
+        {defaultCode && (
+          <div className="mt-5 flex items-center gap-4 rounded-xl border border-border bg-background p-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`${API_URL}/api/authenticity/${encodeURIComponent(defaultCode)}/qr.svg`}
+              alt={`Código QR de autenticidad ${defaultCode}`}
+              width={112}
+              height={112}
+              className="shrink-0 rounded-lg bg-white p-1.5"
+            />
+            <div className="min-w-0">
+              <p className="text-sm font-semibold">Escanéalo con la app de Vokter</p>
+              <p className="mt-1 text-sm text-muted">
+                La app lee el código y lo verifica contra el registro al instante, sin escribir nada.
+              </p>
+              <p className="mt-2 truncate font-mono text-xs text-subtle">{defaultCode}</p>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-2 sm:flex-row">
           <div className="relative flex-1">

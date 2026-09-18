@@ -482,7 +482,7 @@ export default async function HomePage() {
               </p>
               <div className="relative mx-auto mt-4 flex aspect-square w-44 items-center justify-center rounded-2xl border border-border bg-surface">
                 <QrCode size={96} strokeWidth={1.2} className="text-foreground/80" />
-                <span className="absolute inset-x-4 top-1/2 h-0.5 bg-accent shadow-[0_0_16px_2px_rgba(212,255,63,0.7)]" />
+                <span className="absolute inset-x-4 top-1/2 h-0.5 bg-accent shadow-[0_0_16px_2px_rgba(0,174,239,0.7)]" />
                 {[
                   'top-2 left-2 border-t-2 border-l-2',
                   'top-2 right-2 border-t-2 border-r-2',

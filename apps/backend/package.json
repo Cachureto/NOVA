@@ -7,7 +7,8 @@
     "dev": "node --watch --env-file=.env src/server.js",
     "start": "node --env-file=.env src/server.js",
     "db:seed": "node --env-file=.env scripts/seed.js",
-    "db:admin": "node --env-file=.env scripts/make-admin.js"
+    "db:admin": "node --env-file=.env scripts/make-admin.js",
+    "db:migrate": "node --env-file=.env scripts/migrate.js"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",
@@ -19,6 +20,7 @@
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.0",
+    "qrcode": "^1.5.4",
     "zod": "^4.6.5"
   }
 }

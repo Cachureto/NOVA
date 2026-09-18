@@ -26,6 +26,7 @@
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:reset": "docker compose down -v && docker compose up -d",
+    "db:migrate": "npm run db:migrate -w apps/backend",
     "db:seed": "npm run db:seed -w apps/backend",
     "db:admin": "npm run db:admin -w apps/backend --",
     "db:restore": "docker exec -i nova-db psql -U nova -d nova -v ON_ERROR_STOP=1 < apps/backend/db/dump-latest.sql"
@@ -35,7 +36,7 @@
   },
   "packageManager": "npm@11.6.1",
   "overrides": {
-  "react": "19.2.3",
-  "react-dom": "19.2.3"
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   }
 }
