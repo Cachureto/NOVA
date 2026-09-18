@@ -55,7 +55,7 @@ export default async function DropPage({ params }) {
               <img src={drop.coverUrl} alt={drop.name} className="absolute inset-0 h-full w-full object-cover" />
             ) : (
               <div className="flex h-full items-center justify-center font-display text-4xl font-bold text-black/15">
-                NOVA DROP
+                VOKTER DROP
               </div>
             )}
           </div>

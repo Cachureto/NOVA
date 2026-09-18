@@ -26,7 +26,7 @@ export default function ProductCard({ product, priority = false }) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center font-display text-2xl font-bold text-black/15">
-            NOVA
+            VOKTER
           </div>
         )}
 
@@ -61,7 +61,7 @@ export default function ProductCard({ product, priority = false }) {
       <div className="flex flex-1 flex-col gap-1.5 px-2 pt-3.5 pb-2">
         <div className="flex items-center justify-between gap-2">
           <span className="truncate font-mono text-[10px] uppercase tracking-[0.16em] text-subtle">
-            {product.brand || product.category?.name || 'NOVA'}
+            {product.brand || product.category?.name || 'Vokter'}
           </span>
           {product.reviewCount > 0 && (
             <span className="flex items-center gap-1 text-[11px] text-muted">

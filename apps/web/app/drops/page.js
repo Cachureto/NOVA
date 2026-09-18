@@ -43,7 +43,7 @@ function DropCard({ drop, featured = false }) {
           />
         ) : (
           <div className="flex h-full items-center justify-center font-display text-3xl font-bold text-black/15">
-            NOVA DROP
+            VOKTER DROP
           </div>
         )}
         <div className="absolute top-3 left-3 flex flex-col items-center rounded-xl bg-black/80 px-3 py-2 text-white backdrop-blur">
@@ -99,7 +99,7 @@ export default async function DropsPage() {
   const upcoming = drops.filter((d) => d.status === 'scheduled').sort(byDate);
   const past = drops.filter((d) => !['live', 'scheduled'].includes(d.status)).sort((a, b) => byDate(b, a));
 
-  const [featured, ...rest] = [...live, ...upcoming];
+  const active = [...live, ...upcoming];
 
   return (
     <div>
@@ -131,12 +131,10 @@ export default async function DropsPage() {
           </div>
         )}
 
-        {featured && <DropCard drop={featured} featured />}
-
-        {rest.length > 0 && (
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            {rest.map((drop) => (
-              <DropCard key={drop.id} drop={drop} />
+        {active.length > 0 && (
+          <div className="flex flex-col gap-6">
+            {active.map((drop) => (
+              <DropCard key={drop.id} drop={drop} featured />
             ))}
           </div>
         )}

@@ -43,7 +43,7 @@ function RegisterForm() {
 
   return (
     <AuthShell
-      eyebrow="Únete a NOVA"
+      eyebrow="Únete a Vokter"
       title="Crea tu cuenta"
       description="Un mismo login para la tienda web y la app móvil."
       footer={

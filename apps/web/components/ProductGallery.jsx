@@ -20,7 +20,7 @@ export default function ProductGallery({ images, name, verified }) {
           />
         ) : (
           <div className="flex h-full items-center justify-center font-display text-4xl font-bold text-black/15">
-            NOVA
+            VOKTER
           </div>
         )}
         {verified && (

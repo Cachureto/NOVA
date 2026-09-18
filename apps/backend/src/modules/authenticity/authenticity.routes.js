@@ -3,6 +3,7 @@ import { optionalAuth } from '../../middleware/auth.js';
 import { validate } from '../../middleware/validate.js';
 import { validateCodeSchema } from './authenticity.schemas.js';
 import * as authenticity from './authenticity.service.js';
+import { authenticityQrSvg } from './authenticity.qr.js';
 
 const router = Router();
 
@@ -10,6 +11,17 @@ const router = Router();
 // pero si el usuario está autenticado su id queda asociado en el log de verificación.
 router.post('/validate', optionalAuth, validate({ body: validateCodeSchema }), async (req, res) => {
   res.json(await authenticity.validateCode(req.valid.body, req.ip, req.user?.id));
+});
+
+// QR imprimible del código, para la etiqueta del producto y para la ficha web.
+router.get('/:code/qr.svg', async (req, res) => {
+  const svg = await authenticityQrSvg(req.params.code);
+  res.type('image/svg+xml');
+  res.set('Cache-Control', 'public, max-age=86400');
+  // helmet marca todo como same-origin; la web corre en otro puerto y sin esto
+  // el navegador descarta la imagen y el QR se ve en blanco.
+  res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.send(svg);
 });
 
 export default router;

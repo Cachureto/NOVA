@@ -9,11 +9,11 @@ import Footer from '@/components/Footer';
 
 export const metadata = {
   title: {
-    default: 'NOVA — Tecnología urbana con autenticidad verificada',
-    template: '%s · NOVA',
+    default: 'Vokter — Tecnología urbana con autenticidad verificada',
+    template: '%s · Vokter',
   },
   description:
-    'NOVA: cada producto con código de autenticidad verificable, un asistente de compras con IA que solo conoce el catálogo real y drops exclusivos con lista de espera.',
+    'Vokter: cada producto con código de autenticidad verificable, un asistente de compras con IA que solo conoce el catálogo real y drops exclusivos con lista de espera.',
 };
 
 export const viewport = {

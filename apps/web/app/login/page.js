@@ -37,7 +37,7 @@ function LoginForm() {
   return (
     <AuthShell
       eyebrow="Bienvenido de vuelta"
-      title="Ingresa a NOVA"
+      title="Ingresa a Vokter"
       description="Accede para comprar, dejar reseñas y unirte a los drops."
       footer={
         <>

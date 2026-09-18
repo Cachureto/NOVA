@@ -4,6 +4,10 @@ import { Bell, Download, Hammer, ScanLine, ShieldCheck, Smartphone } from 'lucid
 export const metadata = { title: 'Descarga la app' };
 
 const APK_URL = process.env.NEXT_PUBLIC_APK_URL;
+// Mientras no haya APK publicado, el QR lleva a esta misma página: así se abre
+// en el teléfono y desde ahí se descarga en cuanto exista el enlace.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+const QR_VALUE = APK_URL || `${SITE_URL.replace(/\/+$/, '')}/download`;
 
 const FEATURES = [
   {
@@ -28,10 +32,10 @@ export default function DownloadPage() {
       <div className="container-page relative grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-2 lg:gap-20">
         <div>
           <span className="badge-accent">
-            <Smartphone size={13} /> App NOVA · Android
+            <Smartphone size={13} /> App Vokter · Android
           </span>
           <h1 className="display mt-6 text-4xl leading-[1.05] sm:text-6xl">
-            NOVA en tu <span className="text-accent">bolsillo.</span>
+            Vokter en tu <span className="text-accent">bolsillo.</span>
           </h1>
           <p className="mt-5 max-w-lg text-lg text-muted">
             Valida la autenticidad de un producto físico con la cámara y entérate primero de cada drop.
@@ -53,12 +57,14 @@ export default function DownloadPage() {
         </div>
 
         <div className="card relative mx-auto w-full max-w-md p-8 text-center sm:p-10">
+          <p className="eyebrow">{APK_URL ? 'Escanea para descargar' : 'Escanea con tu teléfono'}</p>
+
+          <div className="mx-auto mt-6 w-fit rounded-2xl bg-white p-5">
+            <QRCodeSVG value={QR_VALUE} size={200} bgColor="#ffffff" fgColor="#09090b" level="M" />
+          </div>
+
           {APK_URL ? (
             <>
-              <p className="eyebrow">Escanea para descargar</p>
-              <div className="mx-auto mt-6 w-fit rounded-2xl bg-white p-5">
-                <QRCodeSVG value={APK_URL} size={200} bgColor="#ffffff" fgColor="#09090b" level="M" />
-              </div>
               <a href={APK_URL} className="btn-primary mt-8 h-12 w-full text-[15px]">
                 <Download size={18} /> Descargar APK
               </a>
@@ -68,17 +74,17 @@ export default function DownloadPage() {
             </>
           ) : (
             <>
-              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent">
-                <Hammer size={26} />
-              </span>
-              <h2 className="display mt-6 text-2xl">La app está en construcción</h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted">
-                En cuanto publiquemos el primer build con EAS, el botón de descarga y el código QR aparecerán aquí
-                automáticamente.
-              </p>
-              <p className="mt-6 rounded-xl border border-border bg-background px-4 py-3 font-mono text-xs text-subtle">
-                NEXT_PUBLIC_APK_URL
-              </p>
+              <div className="mt-8 flex items-start gap-3 rounded-xl border border-border bg-background p-4 text-left">
+                <Hammer size={18} className="mt-0.5 shrink-0 text-accent" />
+                <div>
+                  <p className="text-sm font-semibold">El APK todavía no está publicado</p>
+                  <p className="mt-1 text-sm text-muted">
+                    Este código abre esta página en tu teléfono. En cuanto se publique el primer build de
+                    EAS, el QR apuntará al APK y aparecerá el botón de descarga.
+                  </p>
+                </div>
+              </div>
+              <p className="mt-4 font-mono text-xs text-subtle">NEXT_PUBLIC_APK_URL</p>
             </>
           )}
         </div>

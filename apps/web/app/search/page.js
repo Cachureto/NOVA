@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { ArrowUp, BatteryCharging, Cable, Gamepad2, RotateCcw, ShieldCheck, Smartphone } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import ProductGrid from '@/components/ProductGrid';
-import { NovaMark } from '@/components/Logo';
+import { VokterMark } from '@/components/Logo';
 
 const SUGGESTIONS = [
   { icon: Cable, text: 'Cargador rápido bajo $100.000' },
@@ -17,7 +17,7 @@ const SUGGESTIONS = [
 function TypingIndicator() {
   return (
     <div className="flex items-center gap-3">
-      <NovaMark className="h-8 w-8 shrink-0" />
+      <VokterMark className="h-8 w-8 shrink-0" />
       <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md border border-border bg-surface px-4 py-3.5">
         {[0, 150, 300].map((delay) => (
           <span
@@ -86,9 +86,9 @@ function SearchChat() {
     <div className="container-page flex min-h-[calc(100vh-6.25rem)] max-w-4xl flex-col py-8">
       <div className="flex items-center justify-between gap-4 border-b border-border pb-6">
         <div className="flex items-center gap-3">
-          <NovaMark className="h-10 w-10" />
+          <VokterMark className="h-10 w-10" />
           <div>
-            <h1 className="font-display text-lg font-semibold tracking-tight">Asistente de compras NOVA</h1>
+            <h1 className="font-display text-lg font-semibold tracking-tight">Asistente de compras Vokter</h1>
             <p className="flex items-center gap-1.5 text-xs text-muted">
               <ShieldCheck size={13} className="text-live" /> Responde solo con productos, precios y stock reales
             </p>
@@ -136,7 +136,7 @@ function SearchChat() {
               ) : (
                 <div key={i} className="flex animate-fade-up flex-col gap-4">
                   <div className="flex items-start gap-3">
-                    <NovaMark className="h-8 w-8 shrink-0" />
+                    <VokterMark className="h-8 w-8 shrink-0" />
                     <div
                       className={`max-w-[85%] rounded-2xl rounded-tl-md border px-4 py-3 text-sm leading-relaxed whitespace-pre-line ${
                         m.error ? 'border-danger/30 bg-danger/10 text-danger' : 'border-border bg-surface'
@@ -178,7 +178,7 @@ function SearchChat() {
           </button>
         </div>
         <p className="mt-2 text-center text-[11px] text-subtle">
-          La IA interpreta tu mensaje; los productos y precios siempre salen de la base de datos de NOVA.
+          La IA interpreta tu mensaje; los productos y precios siempre salen de la base de datos de Vokter.
         </p>
       </form>
     </div>

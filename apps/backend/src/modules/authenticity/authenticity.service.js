@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 import { query } from '../../db/pool.js';
 
-// NVP- = código de producto (impreso en la ficha), NVU- = código de unidad física (QR en el par).
-const WELL_FORMED_RE = /^NV[PU]-[A-Z0-9-]{8,60}$/i;
+// VKT- = código de producto (impreso en la ficha), VKU- = código de unidad física (QR en el par).
+const WELL_FORMED_RE = /^VK[TU]-[A-Z0-9-]{8,60}$/i;
 
 function classify(match) {
   if (!match) return 'not_found';

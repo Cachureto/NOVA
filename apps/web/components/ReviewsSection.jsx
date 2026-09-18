@@ -152,7 +152,7 @@ export default function ReviewsSection({ productId, initialReviews }) {
                     {(r.user?.name ?? '?').charAt(0).toUpperCase()}
                   </span>
                   <div>
-                    <p className="text-sm font-semibold">{r.user?.name ?? 'Cliente NOVA'}</p>
+                    <p className="text-sm font-semibold">{r.user?.name ?? 'Cliente Vokter'}</p>
                     <p className="text-xs text-subtle">{formatDate(r.createdAt)}</p>
                   </div>
                 </div>

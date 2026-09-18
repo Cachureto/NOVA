@@ -21,7 +21,7 @@ const COLUMNS = [
     ],
   },
   {
-    title: 'App NOVA',
+    title: 'App Vokter',
     links: [
       { href: '/download', label: 'Descargar para Android' },
       { href: '/download', label: 'Escáner de autenticidad' },
@@ -43,7 +43,7 @@ export default function Footer() {
         <div className="max-w-sm">
           <Logo />
           <p className="mt-5 text-sm leading-relaxed text-muted">
-            Tecnología urbana, accesorios y hogar con origen comprobable. Cada producto de NOVA tiene un código único
+            Tecnología urbana, accesorios y hogar con origen comprobable. Cada producto de Vokter tiene un código único
             que puedes validar en la web o con la app.
           </p>
           <ul className="mt-6 flex flex-col gap-2.5">
@@ -76,8 +76,8 @@ export default function Footer() {
 
       <div className="border-t border-border">
         <div className="container-page flex flex-col gap-3 py-6 text-xs text-subtle sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} NOVA. Todos los derechos reservados.</p>
-          <p className="font-mono uppercase tracking-[0.18em]">Hecho en Colombia · Verificado por NOVA</p>
+          <p>© {new Date().getFullYear()} Vokter. Todos los derechos reservados.</p>
+          <p className="font-mono uppercase tracking-[0.18em]">Hecho en Colombia · Verificado por Vokter</p>
         </div>
       </div>
     </footer>

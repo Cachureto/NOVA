@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 export class ApiError extends Error {
   constructor(status, message, details) {
@@ -10,7 +10,7 @@ export class ApiError extends Error {
 
 // Cliente único para Server Components (fetch directo al backend) y Client
 // Components (con token y cookies de sesión). Nunca cachea: los datos de
-// NOVA (stock, precio, waitlist) cambian a cada rato.
+// Vokter (stock, precio, waitlist) cambian a cada rato.
 export async function apiFetch(path, { method = 'GET', body, token, withCredentials = false } = {}) {
   let res;
   try {
@@ -25,7 +25,7 @@ export async function apiFetch(path, { method = 'GET', body, token, withCredenti
       cache: 'no-store',
     });
   } catch {
-    throw new ApiError(0, 'No se pudo conectar con la API de NOVA. ¿Está corriendo el backend?');
+    throw new ApiError(0, 'No se pudo conectar con la API de Vokter. ¿Está corriendo el backend?');
   }
 
   const isJson = res.headers.get('content-type')?.includes('application/json');

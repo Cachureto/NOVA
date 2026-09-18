@@ -1,5 +1,5 @@
 {
-  "name": "@nova/backend",
+  "name": "@vokter/backend",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,18 +7,21 @@
     "dev": "node --watch --env-file=.env src/server.js",
     "start": "node --env-file=.env src/server.js",
     "db:seed": "node --env-file=.env scripts/seed.js",
-    "db:admin": "node --env-file=.env scripts/make-admin.js"
+    "db:admin": "node --env-file=.env scripts/make-admin.js",
+    "db:migrate": "node --env-file=.env scripts/migrate.js"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
+    "expo-server-sdk": "^7.2.0",
     "express": "^5.2.1",
     "express-rate-limit": "^8.7.0",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.0",
+    "qrcode": "^1.5.4",
     "zod": "^4.6.5"
   }
 }

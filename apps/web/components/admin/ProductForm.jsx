@@ -150,11 +150,11 @@ export default function ProductForm({ categories, initial }) {
             id="authenticityCode"
             className="input font-mono uppercase"
             required
-            placeholder="NVP-XXXXXXXX"
+            placeholder="VKT-XXXXXXXX"
             value={authenticityCode}
             onChange={(e) => setAuthenticityCode(e.target.value.toUpperCase())}
           />
-          <p className="mt-2 text-xs text-subtle">Formato NVP- seguido de al menos 8 letras, números o guiones.</p>
+          <p className="mt-2 text-xs text-subtle">Formato VKT- seguido de al menos 8 letras, números o guiones.</p>
         </div>
         <div>
           <label className="label" htmlFor="imageUrl">
@@ -189,11 +189,11 @@ export default function ProductForm({ categories, initial }) {
         </div>
         <div className="px-1 pt-4 pb-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-subtle">
-            {brand || categories.find((c) => c.slug === categorySlug)?.name || 'NOVA'}
+            {brand || categories.find((c) => c.slug === categorySlug)?.name || 'Vokter'}
           </p>
           <p className="mt-1 font-medium">{name || 'Nombre del producto'}</p>
           <p className="mt-2 font-display text-lg font-semibold">{formatCOP(Number(priceCents) || 0)}</p>
-          <p className="mt-2 truncate font-mono text-xs text-muted">{authenticityCode || 'NVP-XXXXXXXX'}</p>
+          <p className="mt-2 truncate font-mono text-xs text-muted">{authenticityCode || 'VKT-XXXXXXXX'}</p>
         </div>
       </aside>
     </form>

@@ -1,5 +1,6 @@
 import { query, withTransaction } from '../../db/pool.js';
 import { conflict, notFound } from '../../utils/httpError.js';
+import { notifyDropLive } from '../notifications/notifications.service.js';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -99,6 +100,15 @@ export async function updateDropStatus(idOrSlug, status) {
     idOrSlug,
   ]);
   if (!rows[0]) throw notFound('Drop no encontrado');
+
+  // Al ponerse en vivo se avisa a la lista de espera. No se espera el envío ni
+  // se deja que un fallo de push tumbe la respuesta del admin.
+  if (status === 'live') {
+    notifyDropLive(rows[0].id).catch((err) =>
+      console.error('No se pudo notificar el drop en vivo:', err.message),
+    );
+  }
+
   return getDrop(rows[0].id);
 }
 

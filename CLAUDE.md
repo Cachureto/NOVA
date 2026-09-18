@@ -1,4 +1,9 @@
-# NOVA — notas de estado del proyecto
+# Vokter — notas de estado del proyecto
+
+> Nota: el proyecto se llamaba "NOVA" hasta que se renombró a "Vokter" (branding, copy, package.json,
+> app.json del mobile, prefijo de códigos de autenticidad NVP-→VKT-). La infraestructura de base de
+> datos (contenedor Docker `nova-db`, usuario/DB Postgres `nova`) se dejó sin tocar a propósito para
+> no romper el entorno local ya en uso — son nombres internos, no aparecen en el sitio.
 
 Monorepo (npm workspaces + turbo): `apps/backend` (Express + PostgreSQL) y `apps/web` (Next.js). No hay app móvil todavía.
 
