@@ -4,7 +4,7 @@ NOVA is a full-stack e-commerce platform for urban tech, accessories and home go
 technical proposal inspired by an analysis of [VOKTER](https://vokter-five.vercel.app/).
 Instead of replicating a generic multi-category store, NOVA is built around three differentiators
 the reference platform lacks: **verified product authenticity**, an **AI shopping assistant**
-grounded in the real catalog, and **drops with waitlists**.
+grounded in the real catalog, and **drops with waitlists**
 
 ## Why NOVA is different
 
