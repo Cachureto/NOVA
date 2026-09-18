@@ -127,6 +127,9 @@ export default function Catalog() {
           <Text style={styles.logo}>VOKTER</Text>
         </View>
         <View style={styles.topActions}>
+          <Pressable onPress={() => router.push('/drops')} hitSlop={8} style={styles.iconButton}>
+            <Ionicons name="flash-outline" size={19} color={colors.foreground} />
+          </Pressable>
           <Pressable onPress={() => router.push('/carrito')} hitSlop={8} style={styles.iconButton}>
             <Ionicons name="bag-outline" size={19} color={colors.foreground} />
             {count > 0 && (

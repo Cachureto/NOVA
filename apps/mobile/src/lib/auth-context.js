@@ -1,5 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch } from './api';
+import { registerForPush, unregisterPush } from './push';
 import { clearTokens, getTokens, loadSession, saveTokens } from './session';
 
 const AuthContext = createContext(null);
@@ -7,6 +8,15 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
+  const [pushState, setPushState] = useState(null); // { token, reason }
+  const pushToken = useRef(null);
+
+  // Con sesión abierta, este teléfono se registra para recibir avisos de drops.
+  const enablePush = useCallback(async () => {
+    const result = await registerForPush();
+    pushToken.current = result.token;
+    setPushState(result);
+  }, []);
 
   // Al abrir la app: si hay tokens guardados, se confirma la sesión con /me.
   useEffect(() => {
@@ -16,7 +26,10 @@ export function AuthProvider({ children }) {
       if (getTokens().accessToken) {
         try {
           const data = await apiFetch('/api/auth/me', { auth: true });
-          if (alive) setUser(data.user);
+          if (alive) {
+            setUser(data.user);
+            enablePush();
+          }
         } catch (err) {
           // 401 = sesión vencida; un error de red no debe borrar los tokens.
           if (err.status === 401) await clearTokens();
@@ -27,14 +40,15 @@ export function AuthProvider({ children }) {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [enablePush]);
 
   const start = useCallback(async (path, body) => {
     const data = await apiFetch(path, { method: 'POST', body: { ...body, client: 'mobile' } });
     await saveTokens(data.accessToken, data.refreshToken);
     setUser(data.user);
+    enablePush();
     return data.user;
-  }, []);
+  }, [enablePush]);
 
   const login = useCallback((email, password) => start('/api/auth/login', { email, password }), [start]);
 
@@ -44,6 +58,9 @@ export function AuthProvider({ children }) {
   );
 
   const logout = useCallback(async () => {
+    await unregisterPush(pushToken.current);
+    pushToken.current = null;
+    setPushState(null);
     const { refreshToken } = getTokens();
     try {
       if (refreshToken) {
@@ -60,8 +77,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, ready, isAdmin: user?.role === 'admin', login, register, logout }),
-    [user, ready, login, register, logout],
+    () => ({ user, ready, isAdmin: user?.role === 'admin', pushState, login, register, logout }),
+    [user, ready, pushState, login, register, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

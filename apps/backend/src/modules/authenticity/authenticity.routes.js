@@ -18,6 +18,9 @@ router.get('/:code/qr.svg', async (req, res) => {
   const svg = await authenticityQrSvg(req.params.code);
   res.type('image/svg+xml');
   res.set('Cache-Control', 'public, max-age=86400');
+  // helmet marca todo como same-origin; la web corre en otro puerto y sin esto
+  // el navegador descarta la imagen y el QR se ve en blanco.
+  res.set('Cross-Origin-Resource-Policy', 'cross-origin');
   res.send(svg);
 });
 
