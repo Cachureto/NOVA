@@ -1,8 +1,8 @@
 {
-  "name": "nova",
+  "name": "vokter",
   "version": "1.0.0",
   "private": true,
-  "description": "NOVA is a full-stack e-commerce platform for urban tech, accessories and home goods, built as a technical proposal inspired by an analysis of VOKTER. It adds three differentiators: verified product authenticity, an AI shopping assistant grounded in the real catalog, and a drop system with waitlists.",
+  "description": "Vokter is a full-stack e-commerce platform for urban tech, accessories and home goods, built around three differentiators: verified product authenticity, an AI shopping assistant grounded in the real catalog, and a drop system with waitlists.",
   "homepage": "https://github.com/Cachureto/NOVA#readme",
   "bugs": {
     "url": "https://github.com/Cachureto/NOVA/issues"

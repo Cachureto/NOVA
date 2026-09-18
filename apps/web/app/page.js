@@ -43,7 +43,7 @@ async function getHomeData() {
 }
 
 const TRUST = [
-  { icon: ShieldCheck, title: 'Autenticidad verificada', text: 'Código NVP único por producto' },
+  { icon: ShieldCheck, title: 'Autenticidad verificada', text: 'Código VKT único por producto' },
   { icon: Sparkles, title: 'Asistente con IA', text: 'Solo recomienda stock real' },
   { icon: CalendarClock, title: 'Drops exclusivos', text: 'Lista de espera y alertas' },
   { icon: Truck, title: 'Envíos nacionales', text: 'Sigue tu pedido en tu cuenta' },
@@ -85,7 +85,7 @@ function HeroVisual({ products }) {
             <BadgeCheck size={22} />
           </span>
           <div className="min-w-0">
-            <p className="text-sm font-semibold">Certificado NOVA</p>
+            <p className="text-sm font-semibold">Certificado Vokter</p>
             <p className="truncate font-mono text-xs text-muted">{main.authenticityCode}</p>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default async function HomePage() {
 
             <h1 className="display mt-6 text-[2.75rem] leading-[0.95] sm:text-6xl lg:text-7xl">
               Original
-              <br />o no es <span className="text-accent">NOVA.</span>
+              <br />o no es <span className="text-accent">Vokter.</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
@@ -257,7 +257,7 @@ export default async function HomePage() {
       <section className="container-page pt-20 lg:pt-28">
         <SectionHeading
           eyebrow="02 — Recién llegados"
-          title="Lo último en NOVA"
+          title="Lo último en Vokter"
           description="Cada uno con su certificado de autenticidad listo para validar."
           href="/catalog"
         />
@@ -266,9 +266,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ================= POR QUÉ NOVA ================= */}
+      {/* ================= POR QUÉ VOKTER ================= */}
       <section className="container-page pt-20 lg:pt-28">
-        <SectionHeading eyebrow="03 — Por qué NOVA" title="Tres razones para comprar sin dudas" />
+        <SectionHeading eyebrow="03 — Por qué Vokter" title="Tres razones para comprar sin dudas" />
 
         <div className="mt-10 grid gap-4 lg:grid-cols-3">
           {/* Autenticidad */}
@@ -283,7 +283,7 @@ export default async function HomePage() {
               <div className="rounded-xl border border-border bg-background p-3">
                 <div className="flex items-center gap-2">
                   <span className="flex-1 truncate rounded-lg border border-border px-3 py-2 font-mono text-xs text-muted">
-                    {products[0]?.authenticityCode ?? 'NVP-XXXXXXXX'}
+                    {products[0]?.authenticityCode ?? 'VKT-XXXXXXXX'}
                   </span>
                   <span className="rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground">
                     Validar
@@ -369,7 +369,7 @@ export default async function HomePage() {
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center font-display text-4xl font-bold text-black/15">
-                    NOVA DROP
+                    VOKTER DROP
                   </div>
                 )}
               </div>
@@ -416,7 +416,7 @@ export default async function HomePage() {
             <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
               <Sparkles size={22} />
             </span>
-            <h2 className="display mt-6 text-3xl sm:text-4xl">¿No sabes qué buscar? Pregúntale a NOVA.</h2>
+            <h2 className="display mt-6 text-3xl sm:text-4xl">¿No sabes qué buscar? Pregúntale a Vokter.</h2>
             <p className="mt-4 text-muted">
               Describe lo que necesitas y tu presupuesto. Te mostramos productos reales con precio y stock actualizados.
             </p>
@@ -451,7 +451,7 @@ export default async function HomePage() {
       <section className="container-page pt-20 lg:pt-28">
         <div className="grid items-center gap-10 overflow-hidden rounded-3xl border border-border bg-surface p-6 sm:p-10 lg:grid-cols-2 lg:p-14">
           <div>
-            <p className="eyebrow">App NOVA para Android</p>
+            <p className="eyebrow">App Vokter para Android</p>
             <h2 className="display mt-4 text-3xl sm:text-4xl">Verifica en la calle, no solo en la web.</h2>
             <ul className="mt-8 flex flex-col gap-4">
               {[
@@ -497,7 +497,7 @@ export default async function HomePage() {
                   <BadgeCheck size={16} /> Producto original
                 </p>
                 <p className="mt-1 truncate font-mono text-[10px] text-muted">
-                  {products[0]?.authenticityCode ?? 'NVP-XXXXXXXX'}
+                  {products[0]?.authenticityCode ?? 'VKT-XXXXXXXX'}
                 </p>
               </div>
               <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-surface-hover" />

@@ -16,7 +16,7 @@ export default function CartPage() {
           <ShoppingBag size={28} />
         </span>
         <h1 className="display mt-6 text-3xl">Tu carrito está vacío</h1>
-        <p className="mt-3 text-muted">Explora el catálogo y agrega productos originales con certificado NOVA.</p>
+        <p className="mt-3 text-muted">Explora el catálogo y agrega productos originales con certificado Vokter.</p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link href="/catalog" className="btn-primary">
             Ver catálogo <ArrowRight size={17} />

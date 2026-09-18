@@ -12,7 +12,7 @@ try {
 }
 
 const server = app.listen(env.PORT, () => {
-  console.log(`🚀 NOVA API en http://localhost:${env.PORT}`);
+  console.log(`🚀 Vokter API en http://localhost:${env.PORT}`);
 });
 
 const shutdown = async () => {

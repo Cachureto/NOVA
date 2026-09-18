@@ -1,5 +1,5 @@
 -- =====================================================================
--- NOVA · Esquema inicial PostgreSQL (>= 14)
+-- Vokter · Esquema inicial PostgreSQL (>= 14)
 -- =====================================================================
 BEGIN;
 
@@ -91,7 +91,7 @@ CREATE TABLE products (
         setweight(to_tsvector('spanish', immutable_unaccent(coalesce(brand, ''))), 'B') ||
         setweight(to_tsvector('spanish', immutable_unaccent(coalesce(description, ''))), 'C')
     ) STORED,
-    CONSTRAINT products_auth_code_format CHECK (authenticity_code ~ '^NVP-[A-Z0-9-]{8,60}$')
+    CONSTRAINT products_auth_code_format CHECK (authenticity_code ~ '^VKT-[A-Z0-9-]{8,60}$')
 );
 CREATE TRIGGER trg_products_updated BEFORE UPDATE ON products
     FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -118,7 +118,7 @@ CREATE TABLE product_units (
     verified_by  UUID REFERENCES users(id),
     verified_at  TIMESTAMPTZ,
     created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
-    CONSTRAINT product_units_code_format CHECK (unit_code ~ '^NVU-[A-Z0-9-]{8,60}$')
+    CONSTRAINT product_units_code_format CHECK (unit_code ~ '^VKU-[A-Z0-9-]{8,60}$')
 );
 CREATE INDEX idx_product_units_product ON product_units(product_id);
 

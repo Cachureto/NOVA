@@ -28,10 +28,10 @@ export default function DownloadPage() {
       <div className="container-page relative grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-2 lg:gap-20">
         <div>
           <span className="badge-accent">
-            <Smartphone size={13} /> App NOVA · Android
+            <Smartphone size={13} /> App Vokter · Android
           </span>
           <h1 className="display mt-6 text-4xl leading-[1.05] sm:text-6xl">
-            NOVA en tu <span className="text-accent">bolsillo.</span>
+            Vokter en tu <span className="text-accent">bolsillo.</span>
           </h1>
           <p className="mt-5 max-w-lg text-lg text-muted">
             Valida la autenticidad de un producto físico con la cámara y entérate primero de cada drop.

@@ -10,7 +10,7 @@ export class ApiError extends Error {
 
 // Cliente único para Server Components (fetch directo al backend) y Client
 // Components (con token y cookies de sesión). Nunca cachea: los datos de
-// NOVA (stock, precio, waitlist) cambian a cada rato.
+// Vokter (stock, precio, waitlist) cambian a cada rato.
 export async function apiFetch(path, { method = 'GET', body, token, withCredentials = false } = {}) {
   let res;
   try {

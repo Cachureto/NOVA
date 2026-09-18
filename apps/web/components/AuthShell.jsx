@@ -27,7 +27,7 @@ export default function AuthShell({ eyebrow, title, description, children, foote
         <div className="relative flex h-full flex-col justify-end p-10">
           <p className="display text-5xl leading-[0.95]">
             Original
-            <br />o no es <span className="text-accent">NOVA.</span>
+            <br />o no es <span className="text-accent">Vokter.</span>
           </p>
           <ul className="mt-10 flex flex-col gap-5">
             {POINTS.map(({ icon: Icon, title: t, text }) => (

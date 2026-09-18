@@ -95,7 +95,7 @@ export default async function ProductPage({ params }) {
 
         <div className="lg:sticky lg:top-24 lg:self-start">
           <p className="eyebrow">
-            {product.brand ?? 'NOVA'}
+            {product.brand ?? 'Vokter'}
             {product.category ? ` · ${product.category.name}` : ''}
           </p>
           <h1 className="display mt-3 text-3xl leading-tight sm:text-4xl">{product.name}</h1>

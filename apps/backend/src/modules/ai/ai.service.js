@@ -48,15 +48,15 @@ function buildSearchFunction(categories) {
 
   return {
     name: 'search_products',
-    description: 'Busca productos reales en el catálogo de NOVA por palabras clave, categoría y rango de precio.',
+    description: 'Busca productos reales en el catálogo de Vokter por palabras clave, categoría y rango de precio.',
     parameters: { type: Type.OBJECT, properties },
   };
 }
 
-const SYSTEM_PROMPT = `Eres el módulo de comprensión de búsqueda de NOVA, una tienda de tecnología urbana, accesorios y hogar.
+const SYSTEM_PROMPT = `Eres el módulo de comprensión de búsqueda de Vokter, una tienda de tecnología urbana, accesorios y hogar.
 Tu única tarea es traducir el mensaje del usuario en una llamada a la función search_products con los filtros
 correctos: palabras clave cortas del producto, la categoría que corresponda (solo si encaja claramente) y el rango
-de precio en pesos COP. No conoces el catálogo real de NOVA: nunca inventes ni menciones nombres de productos,
+de precio en pesos COP. No conoces el catálogo real de Vokter: nunca inventes ni menciones nombres de productos,
 precios o stock, eso lo resuelve el sistema con datos reales.`;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -115,14 +115,14 @@ function formatCOP(cents) {
 
 function buildReply(products, relaxed) {
   if (products.length === 0) {
-    return 'No encontré productos reales de NOVA que coincidan con tu búsqueda. Prueba con otras palabras, otra categoría o un rango de precio distinto.';
+    return 'No encontré productos reales de Vokter que coincidan con tu búsqueda. Prueba con otras palabras, otra categoría o un rango de precio distinto.';
   }
   const lines = products.map(
     (p) => `• ${p.name} — ${formatCOP(p.priceCents)} — stock: ${p.stock} unidad${p.stock === 1 ? '' : 'es'}`,
   );
   const intro = relaxed
-    ? `No encontré una coincidencia exacta, pero estos ${products.length} producto${products.length === 1 ? '' : 's'} reales de NOVA se acercan a lo que buscas:`
-    : `Encontré ${products.length} producto${products.length === 1 ? '' : 's'} de NOVA para ti:`;
+    ? `No encontré una coincidencia exacta, pero estos ${products.length} producto${products.length === 1 ? '' : 's'} reales de Vokter se acercan a lo que buscas:`
+    : `Encontré ${products.length} producto${products.length === 1 ? '' : 's'} de Vokter para ti:`;
   return [intro, ...lines].join('\n');
 }
 

@@ -9,7 +9,7 @@ const RESULTS = {
     icon: BadgeCheck,
     tone: 'alert-success',
     title: 'Código auténtico',
-    text: (p) => `Corresponde a ${p?.name ?? 'un producto NOVA'} y está activo.`,
+    text: (p) => `Corresponde a ${p?.name ?? 'un producto Vokter'} y está activo.`,
   },
   revoked: {
     icon: ShieldX,
@@ -21,13 +21,13 @@ const RESULTS = {
     icon: ShieldX,
     tone: 'alert-error',
     title: 'Código no registrado',
-    text: () => 'No existe en la base de datos de NOVA. El producto podría no ser original.',
+    text: () => 'No existe en la base de datos de Vokter. El producto podría no ser original.',
   },
   suspicious: {
     icon: ShieldAlert,
     tone: 'alert-error',
     title: 'Formato inválido',
-    text: () => 'El código no tiene el formato de NOVA (NVP-XXXXXXXX).',
+    text: () => 'El código no tiene el formato de Vokter (VKT-XXXXXXXX).',
   },
 };
 
@@ -80,7 +80,7 @@ export default function AuthenticityValidator({ defaultCode }) {
           <div>
             <h2 className="font-semibold">Certificado de autenticidad</h2>
             <p className="mt-0.5 text-sm text-muted">
-              Valida el código impreso en tu producto contra el registro de NOVA.
+              Valida el código impreso en tu producto contra el registro de Vokter.
             </p>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function AuthenticityValidator({ defaultCode }) {
               className="input pr-11 font-mono tracking-wide uppercase"
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
-              placeholder="NVP-XXXXXXXX"
+              placeholder="VKT-XXXXXXXX"
               aria-label="Código de autenticidad"
               spellCheck={false}
             />

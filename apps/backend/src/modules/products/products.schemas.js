@@ -47,7 +47,7 @@ export const createProductSchema = z.object({
   authenticityCode: z
     .string()
     .trim()
-    .regex(/^NVP-[A-Z0-9-]{8,60}$/, 'Formato: NVP-XXXXXXXX'),
+    .regex(/^VKT-[A-Z0-9-]{8,60}$/, 'Formato: VKT-XXXXXXXX'),
   attributes: z.record(z.string(), z.unknown()).default({}),
   images: z.array(image).default([]),
 });

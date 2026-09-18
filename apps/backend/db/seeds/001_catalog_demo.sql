@@ -1,5 +1,5 @@
 -- =====================================================================
--- NOVA · Catálogo de ejemplo (usa las fotos de apps/web/public/products)
+-- Vokter · Catálogo de ejemplo (usa las fotos de apps/web/public/products)
 -- Idempotente: se puede ejecutar varias veces sin duplicar nada.
 -- Precios en pesos COP. Los datos son de demostración: ajústalos desde el panel admin.
 -- =====================================================================
@@ -30,19 +30,19 @@ INSERT INTO seed_products VALUES
   ('cargador-4a-20w-tipo-c', 'Cargador 4A 20W Tipo C', 'chargers', 'Technomaster', 27000, 30, 'Carga rápida de 20W con cable tipo C incluido.'),
   ('cargador-67w-tipo-c', 'Cargador Xiaomi 67W Tipo C', 'chargers', 'Xiaomi', 119000, 5, 'Carga turbo de 67W para celulares y tablets compatibles.'),
   ('gold-cargador-25w-tipo-c', 'Cargador Gold 25W Tipo C', 'chargers', 'GD Gold', 32000, 25, 'Quick charger 3.0A con cable tipo C.'),
-  ('power-bank-10000mah', 'Power Bank 10.000 mAh', 'power-banks', 'Nova Tech', 69000, 15, 'Batería portátil con doble salida USB y pantalla de carga.'),
+  ('power-bank-10000mah', 'Power Bank 10.000 mAh', 'power-banks', 'Vokter Tech', 69000, 15, 'Batería portátil con doble salida USB y pantalla de carga.'),
   ('power-bank-20000mah', 'Power Bank 20.000 mAh', 'power-banks', 'WiWU', 99000, 11, 'Alta capacidad para varios días lejos del enchufe.'),
   ('power-bank-2300mah-llavero', 'Power Bank llavero 2.300 mAh', 'power-banks', 'Fly', 35000, 33, 'Mini batería de emergencia tipo llavero.'),
   ('power-bank-5000mah-magsafe', 'Power Bank MagSafe 5.000 mAh', 'power-banks', 'Apple', 129000, 4, 'Batería magnética inalámbrica para iPhone.'),
   ('combo-gamer-t25', 'Combo gamer teclado + mouse T25', 'gaming', 'T-Wolf', 79000, 14, 'Teclado retroiluminado RGB y mouse gamer.'),
   ('consola-retro-blanca-verde', 'Consola retro con 2 controles', 'gaming', 'Retro Box', 149000, 3, 'Miles de juegos clásicos y dos controles inalámbricos.'),
   ('onn-watch-streaming-stick', 'Onn Streaming Stick 4K', 'gaming', 'onn', 159000, 6, 'Convierte cualquier TV en smart con Google TV.'),
-  ('proyector-con-juegos', 'Proyector HD con juegos', 'gaming', 'Nova Tech', 289000, 2, 'Proyector portátil con consola de juegos y dos controles.'),
+  ('proyector-con-juegos', 'Proyector HD con juegos', 'gaming', 'Vokter Tech', 289000, 2, 'Proyector portátil con consola de juegos y dos controles.'),
   ('tv-stick-android-tv', 'TV Stick Android TV', 'gaming', 'Android TV', 139000, 10, 'Streaming en 4K con control por voz.'),
   ('funda-space-collection', 'Funda Space Collection', 'accessories', 'Space', 45000, 0, 'Funda protectora con esquinas reforzadas.'),
   ('holder-carro-chupa-iman', 'Holder para carro con imán', 'accessories', 'Technomaster', 29000, 18, 'Soporte magnético con ventosa para el tablero.'),
   ('holder-para-carro', 'Holder para carro 360°', 'accessories', 'Technomaster', 25000, 22, 'Brazo ajustable de un toque para rejilla o tablero.'),
-  ('hub-usb-multipuerto', 'Hub USB multipuerto 4 en 1', 'accessories', 'Nova Tech', 35000, 16, 'Cuatro puertos USB 3.0 de alta velocidad.'),
+  ('hub-usb-multipuerto', 'Hub USB multipuerto 4 en 1', 'accessories', 'Vokter Tech', 35000, 16, 'Cuatro puertos USB 3.0 de alta velocidad.'),
   ('mouse-alambrico-optico', 'Mouse alámbrico óptico', 'accessories', 'SJ', 15000, 40, 'Mouse USB óptico ergonómico.'),
   ('mouse-inalambrico-optico', 'Mouse inalámbrico Gold', 'accessories', 'GD Gold', 29000, 27, 'Mouse inalámbrico 2.4GHz con receptor USB.'),
   ('soporte-moto-espejo', 'Soporte moto para espejo', 'accessories', 'XL+M3', 39000, 19, 'Soporte para celular que se fija al espejo retrovisor.'),
@@ -67,7 +67,7 @@ INSERT INTO seed_products VALUES
 
 INSERT INTO products (slug, name, category_id, brand, description, price_cents, stock, authenticity_code)
 SELECT s.slug, s.name, c.id, s.brand, s.description, s.price, s.stock,
-       'NVP-' || upper(replace(s.slug, '-', ''))
+       'VKT-' || upper(replace(s.slug, '-', ''))
 FROM seed_products s
 JOIN categories c ON c.slug = s.category
 ON CONFLICT (slug) DO UPDATE SET
@@ -84,7 +84,7 @@ ON CONFLICT (product_id, position) DO UPDATE SET url = EXCLUDED.url, alt_text = 
 -- Drops de ejemplo (fechas relativas a hoy para que siempre haya uno en vivo y dos próximos)
 INSERT INTO drops (slug, name, description, launch_at, status, cover_url) VALUES
   ('urban-rider-kit', 'Urban Rider Kit',
-   'Todo para moverte en moto por la ciudad: soportes y holders con certificado NOVA.',
+   'Todo para moverte en moto por la ciudad: soportes y holders con certificado Vokter.',
    now() - interval '2 hours', 'live', '/products/soporte-moto-manubrio-360.jpg'),
   ('night-charge-pack', 'Night Charge Pack',
    'Edición limitada de carga rápida: power banks y cargadores. Solo 50 unidades numeradas.',

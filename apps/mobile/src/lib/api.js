@@ -25,7 +25,7 @@ export async function apiFetch(path, { method = 'GET', body, token, timeoutMs = 
       signal: controller.signal,
     });
   } catch {
-    throw new ApiError(0, `No se pudo conectar con la API de NOVA en ${API_URL}. ¿Está corriendo el backend?`);
+    throw new ApiError(0, `No se pudo conectar con la API de Vokter en ${API_URL}. ¿Está corriendo el backend?`);
   } finally {
     clearTimeout(timer);
   }

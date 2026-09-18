@@ -34,7 +34,7 @@ export default function AdminLayout({ children }) {
       <div className="flex flex-col gap-6 border-b border-border pb-6 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="eyebrow">Administración</p>
-          <h1 className="page-title mt-3">Panel NOVA</h1>
+          <h1 className="page-title mt-3">Panel Vokter</h1>
         </div>
         <nav
           className="flex gap-1 overflow-x-auto rounded-full border border-border bg-surface p-1"

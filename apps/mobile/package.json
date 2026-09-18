@@ -1,5 +1,5 @@
 {
-  "name": "@nova/mobile",
+  "name": "@vokter/mobile",
   "version": "1.0.0",
   "private": true,
   "main": "expo-router/entry",

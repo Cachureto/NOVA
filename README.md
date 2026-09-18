@@ -1,19 +1,18 @@
-# NOVA — Verified Urban Tech Commerce
+# Vokter — Verified Urban Tech Commerce
 
-NOVA is a full-stack e-commerce platform for urban tech, accessories and home goods, built as a
-technical proposal inspired by an analysis of [VOKTER](https://vokter-five.vercel.app/).
-Instead of replicating a generic multi-category store, NOVA is built around three differentiators
-the reference platform lacks: **verified product authenticity**, an **AI shopping assistant**
-grounded in the real catalog, and **drops with waitlists**.
+Vokter is a full-stack e-commerce platform for urban tech, accessories and home goods. Instead of
+being a generic multi-category store, Vokter is built around three differentiators: **verified
+product authenticity** on every item, an **AI shopping assistant** grounded strictly in the real
+catalog, and **drops with waitlists** for limited releases.
 
-## Why NOVA is different
+## What makes Vokter different
 
-| VOKTER | NOVA |
-|---|---|
-| Generic multi-category catalog | Curated urban tech catalog with its own visual identity |
-| No trust/authenticity mechanism | Unique, verifiable authenticity code (`NVP-…`) on every product |
-| Static, admin-curated bundles | AI assistant that answers only with real products, prices and stock |
-| Passive email newsletter | Drop calendar with countdowns, waitlists and (mobile) push alerts |
+- **Curated urban tech catalog** with its own visual identity, not a generic multi-category dump.
+- **Verified authenticity.** Every product carries a unique, verifiable code (`VKT-…`) that customers
+  can validate on the web or in the app.
+- **Grounded AI assistant.** It answers only with real products, prices and stock — never invents
+  an item that isn't in the catalog.
+- **Drop calendar** with countdowns, waitlists and (mobile) push alerts for limited releases.
 
 ## Features
 
@@ -176,8 +175,8 @@ Dumps contain user emails and password hashes: share them privately and never co
   with foreign keys, so data stays consistent and queries per user are indexed.
 - **Money as integers.** Prices are stored as integer pesos (`price_cents`), never floats, and are
   frozen in `order_items` at purchase time.
-- **Authenticity.** Product codes (`NVP-…`) live on each product; the schema also supports per-unit
-  codes (`NVU-…`) for physical QR labels. Every validation is logged in `authenticity_checks`.
+- **Authenticity.** Product codes (`VKT-…`) live on each product; the schema also supports per-unit
+  codes (`VKU-…`) for physical QR labels. Every validation is logged in `authenticity_checks`.
 - **Grounded AI.** Gemini only returns structured filters (text, category, price range) through
   function calling. Categories come from the database, and products, prices and stock always come
   from PostgreSQL, so the assistant cannot hallucinate items.
@@ -207,5 +206,4 @@ The APK link and QR code will be available at `/download` once the first EAS bui
 
 ## License
 
-This project was developed for evaluation purposes as part of a technical assessment referencing
-[VOKTER](https://vokter-five.vercel.app/) as a design inspiration only.
+This project was developed for evaluation purposes as part of a technical assessment.

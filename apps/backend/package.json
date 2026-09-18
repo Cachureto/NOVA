@@ -1,5 +1,5 @@
 {
-  "name": "@nova/backend",
+  "name": "@vokter/backend",
   "version": "0.1.0",
   "private": true,
   "type": "module",
