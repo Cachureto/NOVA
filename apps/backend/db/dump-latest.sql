@@ -63,6 +63,7 @@ DROP INDEX IF EXISTS public.idx_auth_checks_code;
 DROP INDEX IF EXISTS public.idx_ai_tool_calls_conv;
 ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
 ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_email_key;
+ALTER TABLE IF EXISTS ONLY public.schema_migrations DROP CONSTRAINT IF EXISTS schema_migrations_pkey;
 ALTER TABLE IF EXISTS ONLY public.reviews DROP CONSTRAINT IF EXISTS reviews_product_id_user_id_key;
 ALTER TABLE IF EXISTS ONLY public.reviews DROP CONSTRAINT IF EXISTS reviews_pkey;
 ALTER TABLE IF EXISTS ONLY public.refresh_tokens DROP CONSTRAINT IF EXISTS refresh_tokens_token_hash_key;
@@ -93,6 +94,7 @@ ALTER TABLE IF EXISTS public.ai_tool_calls ALTER COLUMN id DROP DEFAULT;
 DROP VIEW IF EXISTS public.v_catalog;
 DROP VIEW IF EXISTS public.v_authenticity_lookup;
 DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.schema_migrations;
 DROP TABLE IF EXISTS public.reviews;
 DROP TABLE IF EXISTS public.refresh_tokens;
 DROP TABLE IF EXISTS public.push_tokens;
@@ -619,6 +621,18 @@ CREATE TABLE public.reviews (
 ALTER TABLE public.reviews OWNER TO nova;
 
 --
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: nova
+--
+
+CREATE TABLE public.schema_migrations (
+    filename text NOT NULL,
+    applied_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.schema_migrations OWNER TO nova;
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: nova
 --
 
@@ -850,6 +864,36 @@ d617cf12-2ff9-416a-b4cb-1ef5730131ec	336e4480-c2e7-495e-ab67-4d2bc2c76bad	/produ
 5f3993f4-7add-415b-b216-066260f99dda	b53364cf-b721-4d3a-ba9f-f288e066643e	/products/parlante-portatil-s640.jpg	\N	0
 87e8b6b0-d88b-4cf8-9d32-9d3d34ec0b1c	c5da8f09-ff74-411b-a91d-04be5ec5863a	/products/audifonos-w01.jpg	\N	0
 6b642f5a-dc97-4752-96a7-288956df6d38	f437d7e4-ff55-4cf1-b4fc-c78b63aa1dbd	/products/audifonos-z1-bass.jpg	\N	0
+dc8c9e6f-b859-4df3-ac8f-6c87b5c3b376	6ca1ec68-b68f-4c30-9ca9-aa5674f749f5	/products/LV Skate Sneakers.jpg	\N	0
+b50919dc-e773-4b58-a191-f267378b4766	421910b4-9127-4238-a06b-59f6dd585caa	/products/LV Trainer.jpg	\N	0
+13ca221b-9f76-451b-8549-610872ec4b45	466ef47d-5938-4a9a-80ae-6e3ad60c5bd9	/products/Valentino V17n Bond.jpg	\N	0
+f0f91e46-a15e-4b1b-bb10-74a88c8e5ad5	599d4dc6-0d7f-4d86-9e7e-6271f90233a6	/products/LV Archlight Trainer.jpg	\N	0
+a5586fc6-f4d0-4e33-90a0-79fc7eb5a38a	2c40c6b9-93aa-4805-bff6-b360063a3759	/products/Valentino Garavani Diamante.jpg	\N	0
+5d0fa188-d0a4-410a-9a95-52ae3e1539df	99136778-2b83-4e0f-a8d0-3901759011d2	/products/Valentino Open Sneaker.jpg	\N	0
+52595fce-ec8f-497c-b5ef-f0826913e833	109bd2db-2dfb-43ee-80b3-040bf09bedde	/products/under-armour-valsetz.jpg	\N	0
+26f71561-f2c9-4908-874b-bdbb656367d2	5e8ea8c8-0d78-491a-979c-0c30a2eef8a5	/products/hoka-clifton-10.jpg	\N	0
+ce2103c1-d21d-4dac-9b82-3f9a8f93f2b3	551d642c-f850-457c-a8c2-2e5dcea59068	/products/skechers-mocasin.jpg	\N	0
+06a0f74a-6fdf-41d9-87a8-31bba6561c1d	4456a81a-50f8-4e56-9e00-85a0c55a3343	/products/hoka-skyflow.jpg	\N	0
+1e2f8947-3afe-425d-beb4-0b3d244e906e	0abcd794-108a-489f-896b-da7c610e8859	/products/hoka-gaviota.jpg	\N	0
+f437decd-cac9-4fa2-b8c1-46a2a0126053	27f93f64-a93c-4205-b23e-804bd29b4f24	/products/hoka-bondi-9.jpg	\N	0
+8355d943-86ac-408f-958c-dcf492b0cf1b	ec514607-8a58-4bad-8597-58c126562394	/products/nike-6976-conjunto.jpg	\N	0
+3bb5b1dc-cb25-4708-8355-ba80e41fb0c8	34ae980e-ada8-4082-a087-c6ff9ce93e6f	/products/nike-conjunto-verde-negro.jpg	\N	0
+cff82a0b-3cc7-40cd-880d-0260159429c2	4fd1cc0c-9e3c-4ea7-b7fd-acd98a63e412	/products/adidas-h685-conjunto-dama.jpg	\N	0
+3708dc85-9598-47b2-931a-2382e4865f43	03bfc3c9-b6ea-43f8-ab2c-f77eff53be53	/products/nike-n8805-conjunto.jpg	\N	0
+0b47e902-eb7f-4b5e-8c0d-14a00e8dabe1	03ea46be-6558-4f6f-8237-3e54d61ad3e7	/products/nike-conjunto-rosa-negro.jpg	\N	0
+4189c249-6aef-4cc4-8068-053bb83bdc0c	a7d60352-d1c3-4320-a79d-00c79fa7c829	/products/nike-h89-conjunto-dama.jpg	\N	0
+8c8aed58-8dcd-44a2-9e35-f8af47958ae4	8d593b0b-5dd9-474b-8679-60833dd373b3	/products/puma-3503-conjunto.jpg	\N	0
+f2efa541-f612-432b-9778-f42bf4cb2c36	1d1556cf-c563-4eff-a076-c83618811786	/products/nike-h88-conjunto-dama.jpg	\N	0
+2bb962f9-b7d9-4595-bd41-acce59fafe25	ff1eac27-6445-4bec-9f19-77af21b1efc2	/products/on-running-6976-conjunto.jpg	\N	0
+e9c9642f-611d-4473-b312-90b7b783cf32	4a70bfa1-920c-4e9a-af62-edbd2169502b	/products/jordan-2333-conjunto.jpg	\N	0
+363a1e85-d57f-442e-9a74-68b66fa06aa2	c723d874-7e3d-43cd-8de9-895fb936c33b	/products/adidas-3-franjas-teal.jpg	\N	0
+2705b78f-c359-4289-8e87-fa033df62d0d	f150a5ca-f751-4156-ac3d-9b0f603aa9e2	/products/nike-conjunto-aqua-negro.jpg	\N	0
+49a655cc-c037-4606-af1f-11f212445104	9b1fe65d-16ec-4214-ab2e-188ce3d795a9	/products/puma-3508-conjunto.jpg	\N	0
+e457dcac-5601-4f2d-8fbd-e5c82a2e3330	10bdbbab-d302-43ed-b0e7-b8f559251de0	/products/adidas-3-franjas-lila.jpg	\N	0
+901fb887-ea09-4591-990d-608d746222ac	a6354a85-c98d-4aa9-84d8-b2e15b459cd7	/products/under-armour-6976-conjunto.jpg	\N	0
+f383837a-d3f4-4043-9287-f3fdfb0f9049	c71e8800-2b35-4e77-869e-ad3d900f601a	/products/adidas-3-franjas-verde.jpg	\N	0
+f0ad9619-ff64-4738-9cd6-6fa9db9bf6f5	5161b758-5094-4594-8fa7-823527c935e1	/products/camisa-seleccion-colombia.jpg	\N	0
+2452a651-f977-4439-893b-3393fcf98a4f	0014a4bd-7718-45ae-a56d-efdcf848a1ae	/products/lacoste-2335-conjunto.jpg	\N	0
 \.
 
 
@@ -881,6 +925,36 @@ c02b7d96-f2ca-4ea4-9c5d-b9f125a802ec	Tenis Deportivos Livianos	tenis-deportivos-
 46262463-c762-444d-9dfc-a36916e28e82	Gorro Beanie Negro	gorro-beanie-negro	2	Vokter	Gorro beanie Vokter en punto grueso, ajuste unisex.	35000	COP	30	VKT-VOKTER-BEANIE-01	active	{}	t	2026-09-17 20:05:52.345134+00	2026-09-17 21:12:06.604244+00
 e75e8dab-955c-40ac-91a2-20f4251848ac	Soporte para Moto Espejo	soporte-moto-espejo	5	XL+M3	Soporte GPS/celular para espejo de moto, instalación segura y estable.	13000	COP	15	VKT-GOLD-MOTOESP-01	active	{}	t	2026-09-16 22:30:38.699644+00	2026-09-17 21:09:42.491096+00
 6290b041-f438-4bf9-b0fe-bc0aaa7d9154	Audífonos Manos Libres Music Colores	audifonos-music-colores	4	Technomaster	Audífonos manos libres con cable, conector 3.5mm, diseño a color, micrófono integrado.	8000	COP	40	VKT-TECHNO-MUSICOL-01	active	{}	t	2026-09-17 19:29:56.044193+00	2026-09-18 02:41:07.483936+00
+109bd2db-2dfb-43ee-80b3-040bf09bedde	Under Armour Valsetz	under-armour-valsetz	1	Under Armour	Bota táctica Under Armour Valsetz, resistente para uso urbano y outdoor. Tallas 38-44.	210000	COP	11	VKT-VOKTER-UAVALSETZ-01	active	{}	t	2026-09-18 18:10:40.103151+00	2026-09-18 18:39:54.423155+00
+5e8ea8c8-0d78-491a-979c-0c30a2eef8a5	Hoka Clifton 10	hoka-clifton-10	1	Hoka	Tenis running Hoka Clifton 10, amortiguación suave para uso diario. Tallas 38-44.	240000	COP	12	VKT-VOKTER-HOKACLIF10-01	active	{}	t	2026-09-18 18:10:40.103151+00	2026-09-18 18:40:24.966112+00
+551d642c-f850-457c-a8c2-2e5dcea59068	Skechers Mocasín	skechers-mocasin	1	Skechers	Mocasín casual Skechers, cómodo para uso diario. Tallas 38-44.	210000	COP	20	VKT-VOKTER-SKECMOC01-01	active	{}	t	2026-09-18 18:10:40.103151+00	2026-09-18 18:40:47.106466+00
+4456a81a-50f8-4e56-9e00-85a0c55a3343	Hoka Skyflow	hoka-skyflow	1	Hoka	Tenis running Hoka Skyflow, ligero y responsivo para entrenamiento. Tallas 38-44.	270000	COP	9	VKT-VOKTER-HOKASKYFLOW-01	active	{}	t	2026-09-18 18:10:40.103151+00	2026-09-18 18:43:14.878334+00
+0abcd794-108a-489f-896b-da7c610e8859	Hoka Gaviota	hoka-gaviota	1	Hoka	Tenis running Hoka Gaviota, soporte y estabilidad para pisada pronada. Tallas 38-44.	260000	COP	14	VKT-VOKTER-HOKAGAVIOTA-01	active	{}	t	2026-09-18 18:10:40.103151+00	2026-09-18 18:43:36.93519+00
+27f93f64-a93c-4205-b23e-804bd29b4f24	Hoka Bondi 9	hoka-bondi-9	1	Hoka	Tenis running Hoka Bondi 9, máxima amortiguación para largas distancias. Tallas 38-44.	270000	COP	10	VKT-VOKTER-HOKABONDI9-01	active	{}	t	2026-09-18 18:10:40.103151+00	2026-09-18 18:44:20.191627+00
+6ca1ec68-b68f-4c30-9ca9-aa5674f749f5	LV Skate Sneakers	lv	1		Tenis LV Skate Sneakers Tallas 35-43.	210000	COP	11	VKT-VOKTER-URBAN01-01	active	{}	t	2026-09-18 18:13:50.609914+00	2026-09-18 18:30:40.698929+00
+421910b4-9127-4238-a06b-59f6dd585caa	LV Trainer	trainer	1	Louis Vuitton	Tenis LV Trainer Tallas 35-43.	190000	COP	12	VKT-VOKTER-VELCRO01-01	active	{}	t	2026-09-18 18:13:50.609914+00	2026-09-18 18:32:27.556342+00
+466ef47d-5938-4a9a-80ae-6e3ad60c5bd9	Valentino V17n Bond	v17n	1	Valentino	Tenis Valentino V17n Bond. Tallas 35-43.	170000	COP	15	VKT-VOKTER-CASUAL01-01	active	{}	t	2026-09-18 18:13:50.609914+00	2026-09-18 18:41:16.948534+00
+599d4dc6-0d7f-4d86-9e7e-6271f90233a6	LV Archlight Trainer	archlight	1	Louis Vuitton	Tenis LV Archlight Trainer. Tallas 35-43.	270000	COP	9	VKT-VOKTER-CHUNK01-01	active	{}	t	2026-09-18 18:13:50.609914+00	2026-09-18 18:41:51.948227+00
+2c40c6b9-93aa-4805-bff6-b360063a3759	Valentino Garavani Diamante	garavani	1	Valentino	Tenis Valentino Garavani Diamante. Tallas 35-43.	270000	COP	10	VKT-VOKTER-SKATE02-01	active	{}	t	2026-09-18 18:13:50.609914+00	2026-09-18 18:42:21.725284+00
+99136778-2b83-4e0f-a8d0-3901759011d2	Valentino Open Sneaker	open	1	Valentino	Tenis Valentino Open Sneaker. Tallas 35-43.	180000	COP	13	VKT-VOKTER-TRAIN03-01	active	{}	t	2026-09-18 18:13:50.609914+00	2026-09-18 18:42:47.267807+00
+34ae980e-ada8-4082-a087-c6ff9ce93e6f	Nike Conjunto Verde/Negro	nike-conjunto-verde-negro	2	Nike	Conjunto deportivo Nike acolchado, verde y negro. Tallas S-XL.	145000	COP	14	VKT-VOKTER-NIKEVERDE-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:14:17.3942+00
+ec514607-8a58-4bad-8597-58c126562394	Nike 6976 Conjunto	nike-6976-conjunto	2	Nike	Conjunto deportivo Nike, chaqueta y pantalón. Tallas XL-4XL.	165000	COP	12	VKT-VOKTER-NIKE6976-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:12:33.531851+00
+4fd1cc0c-9e3c-4ea7-b7fd-acd98a63e412	Adidas H-685 Conjunto Dama	adidas-h685-conjunto-dama	2	Adidas	Conjunto deportivo Adidas para dama, buso y leggins. Tallas S-XL.	150000	COP	15	VKT-VOKTER-ADIH685-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:15:05.806584+00
+03bfc3c9-b6ea-43f8-ab2c-f77eff53be53	Nike N8805 Conjunto	nike-n8805-conjunto	2	Nike	Conjunto deportivo Nike, chaqueta y pantalón. Tallas XL-4XL.	165000	COP	12	VKT-VOKTER-NIKEN8805-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:16:08.598355+00
+03ea46be-6558-4f6f-8237-3e54d61ad3e7	Nike Conjunto Rosa/Negro	nike-conjunto-rosa-negro	2	Nike	Conjunto deportivo Nike acolchado, rosa y negro. Tallas S-XL.	145000	COP	14	VKT-VOKTER-NIKEROSA-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:16:35.17416+00
+a7d60352-d1c3-4320-a79d-00c79fa7c829	Nike H-89 Conjunto Dama	nike-h89-conjunto-dama	2	Nike	Conjunto deportivo Nike para dama, buso y leggins. Tallas S-XL.	150000	COP	15	VKT-VOKTER-NIKEH89-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:17:35.305696+00
+8d593b0b-5dd9-474b-8679-60833dd373b3	Puma 3503 Conjunto	puma-3503-conjunto	2	Puma	Conjunto deportivo Puma, chaqueta y pantalón. Tallas XL-4XL.	150000	COP	12	VKT-VOKTER-PUMA3503-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:18:49.979288+00
+1d1556cf-c563-4eff-a076-c83618811786	Nike H-88 Conjunto Dama	nike-h88-conjunto-dama	2	Nike	Conjunto deportivo Nike para dama, buso y leggins. Tallas S-XL.	150000	COP	15	VKT-VOKTER-NIKEH88-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:19:33.287154+00
+ff1eac27-6445-4bec-9f19-77af21b1efc2	On Running 6976 Conjunto	on-running-6976-conjunto	2	On Running	Conjunto deportivo On Running, chaqueta y pantalón. Tallas XL-4XL.	180000	COP	8	VKT-VOKTER-ONRUN6976-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:20:13.751952+00
+4a70bfa1-920c-4e9a-af62-edbd2169502b	Jordan 2333 Conjunto	jordan-2333-conjunto	2	Jordan	Conjunto deportivo Jordan, chaqueta y pantalón. Tallas XL-4XL.	195000	COP	7	VKT-VOKTER-JORDAN2333-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:21:09.977493+00
+c723d874-7e3d-43cd-8de9-895fb936c33b	Adidas 3 Franjas Teal	adidas-3-franjas-teal	2	Adidas	Conjunto deportivo Adidas 3 franjas para dama. Tallas S-XL.	140000	COP	16	VKT-VOKTER-ADI3FTEAL-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:21:46.553107+00
+f150a5ca-f751-4156-ac3d-9b0f603aa9e2	Nike Conjunto Aqua/Negro	nike-conjunto-aqua-negro	2	Nike	Conjunto deportivo Nike acolchado, aqua y negro. Tallas S-XL.	145000	COP	14	VKT-VOKTER-NIKEAQUA-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:22:19.18636+00
+9b1fe65d-16ec-4214-ab2e-188ce3d795a9	Puma 3508 Conjunto	puma-3508-conjunto	2	Puma	Conjunto deportivo Puma, chaqueta y pantalón. Tallas XL-4XL.	150000	COP	12	VKT-VOKTER-PUMA3508-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:23:06.552282+00
+10bdbbab-d302-43ed-b0e7-b8f559251de0	Adidas 3 Franjas Lila	adidas-3-franjas-lila	2	Adidas	Conjunto deportivo Adidas 3 franjas para dama. Tallas S-XL.	140000	COP	16	VKT-VOKTER-ADI3FLILA-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:23:30.96385+00
+a6354a85-c98d-4aa9-84d8-b2e15b459cd7	Under Armour 6976 Conjunto	under-armour-6976-conjunto	2	Under Armour	Conjunto deportivo Under Armour, chaqueta y pantalón. Tallas XL-4XL.	170000	COP	10	VKT-VOKTER-UA6976-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:24:24.021935+00
+c71e8800-2b35-4e77-869e-ad3d900f601a	Adidas 3 Franjas Verde	adidas-3-franjas-verde	2	Adidas	Conjunto deportivo Adidas 3 franjas para dama. Tallas S-XL.	140000	COP	16	VKT-VOKTER-ADI3FVERDE-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:24:46.085386+00
+5161b758-5094-4594-8fa7-823527c935e1	Camisa Selección Colombia	camisa-seleccion-colombia	2		Camiseta de fútbol Selección Colombia. Tallas S-XL.	120000	COP	20	VKT-VOKTER-COLJER01-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:26:15.819384+00
+0014a4bd-7718-45ae-a56d-efdcf848a1ae	Lacoste 2335 Conjunto	lacoste-2335-conjunto	2	Lacoste	Conjunto deportivo Lacoste, chaqueta y pantalón. Tallas XL-4XL.	185000	COP	6	VKT-VOKTER-LACOSTE2335-01	active	{}	t	2026-09-18 19:03:02.59791+00	2026-09-18 19:27:01.31278+00
 495467ae-8a9d-4b4f-a434-0e805adae2b2	Micrófono Inalámbrico K9	microfono-inalambrico-k9	3	K9	Micrófono inalámbrico compacto para celular, compatible con USB-C y Lightning.	25000	COP	20	VKT-GOLD-MICK9-01	active	{}	t	2026-09-16 22:30:38.707544+00	2026-09-17 21:09:42.491096+00
 ff3cd5cb-8115-422f-8d41-d901cd6ac87e	Power Bank 2300mAh Llavero	power-bank-2300mah-llavero	5	Fly	Power bank tipo llavero de 2300mAh, ideal como carga de emergencia para iPhone.	13000	COP	25	VKT-GOLD-PB2300-01	active	{}	t	2026-09-16 22:30:38.715126+00	2026-09-17 21:09:42.491096+00
 0f524fa4-401d-4671-ba3d-96e2eb546977	Power Bank 10.000 mAh	power-bank-10000mah	5	Powertech	Power bank 10.000mAh con pantalla digital de batería y cable incluido.	45000	COP	18	VKT-GOLD-PB10000-01	active	{}	t	2026-09-16 22:30:38.721981+00	2026-09-17 21:09:42.491096+00
@@ -959,6 +1033,17 @@ bd2b1ba6-e35b-4d07-945a-abfb327908bb	Camisa Manga Larga Verde	camisa-manga-larga
 
 
 --
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: nova
+--
+
+COPY public.schema_migrations (filename, applied_at) FROM stdin;
+001_initial_schema.sql	2026-09-18 17:34:05.273097+00
+002_seed_categories.sql	2026-09-18 17:34:05.275119+00
+003_rename_codes_to_vkt.sql	2026-09-18 17:34:05.278883+00
+\.
+
+
+--
 -- Name: ai_tool_calls_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nova
 --
 
@@ -969,7 +1054,7 @@ SELECT pg_catalog.setval('public.ai_tool_calls_id_seq', 17, true);
 -- Name: authenticity_checks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nova
 --
 
-SELECT pg_catalog.setval('public.authenticity_checks_id_seq', 6, true);
+SELECT pg_catalog.setval('public.authenticity_checks_id_seq', 8, true);
 
 
 --
@@ -1169,6 +1254,14 @@ ALTER TABLE ONLY public.reviews
 
 ALTER TABLE ONLY public.reviews
     ADD CONSTRAINT reviews_product_id_user_id_key UNIQUE (product_id, user_id);
+
+
+--
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: nova
+--
+
+ALTER TABLE ONLY public.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename);
 
 
 --
