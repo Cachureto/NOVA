@@ -27,7 +27,8 @@
     "db:down": "docker compose down",
     "db:reset": "docker compose down -v && docker compose up -d",
     "db:seed": "npm run db:seed -w apps/backend",
-    "db:admin": "npm run db:admin -w apps/backend --"
+    "db:admin": "npm run db:admin -w apps/backend --",
+    "db:restore": "docker exec -i nova-db psql -U nova -d nova -v ON_ERROR_STOP=1 < apps/backend/db/dump-latest.sql"
   },
   "devDependencies": {
     "turbo": "^2.0.0"

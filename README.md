@@ -103,13 +103,32 @@ In `apps/backend/.env` set at least:
 - `JWT_ACCESS_SECRET`: generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`
 - `GEMINI_API_KEY`: free key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (only needed for the AI assistant)
 
-### 4. Load the demo catalog
+### 4. Load the catalog
 
 ```bash
 npm run db:seed
 ```
 
 Idempotent: it can be run many times without duplicating data. Prices and stock are demo values.
+
+To get an exact copy of a teammate's catalog instead (same products, prices, images, drops), have
+them run `npm run db:up` once and share the generated `apps/backend/db/dump-latest.sql`. It excludes
+account data (users, tokens, orders, reviews) on purpose, so it's safe to commit and share. Regenerate
+it anytime with:
+
+```bash
+docker exec nova-db pg_dump -U nova -d nova --clean --if-exists \
+  --exclude-table-data=users --exclude-table-data=refresh_tokens --exclude-table-data=push_tokens \
+  --exclude-table-data=orders --exclude-table-data=order_items --exclude-table-data=reviews \
+  --exclude-table-data=authenticity_checks --exclude-table-data=ai_tool_calls --exclude-table-data=drop_waitlist \
+  > apps/backend/db/dump-latest.sql
+```
+
+With the file in place, run this instead of `db:seed`:
+
+```bash
+npm run db:restore
+```
 
 ### 5. Run the apps
 
