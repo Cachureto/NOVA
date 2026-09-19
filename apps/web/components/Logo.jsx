@@ -1,27 +1,40 @@
 import Link from 'next/link';
 
-// Marca Vokter: estrella de 4 puntas (una "nova") + wordmark
-export function VokterMark({ className = 'h-7 w-7' }) {
+/**
+ * Marca Vokter: el emblema de la V alada.
+ *
+ * Es un PNG con fondo transparente recortado del logo original. Se sirve con
+ * <img> y no con next/image a propósito: mide unos pocos KB, aparece en todas
+ * las páginas y no gana nada pasando por el optimizador de imágenes, que en
+ * Vercel además se cobra por transformación.
+ *
+ * El emblema es apaisado (casi 2:1), así que se fija el alto y el ancho va
+ * solo. Está pensado para fondo oscuro: el resplandor azul se compuso sobre
+ * negro y sobre un fondo claro se vería apagado.
+ */
+export function VokterMark({ className = 'h-8 w-auto' }) {
   return (
-    <svg
-      viewBox="0 0 32 32"
-      className={className}
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/vokter-mark.png"
+      alt=""
       aria-hidden="true"
-      style={{ filter: 'drop-shadow(0 0 6px rgba(0, 162, 232, 0.75))' }}
-    >
-      <rect width="32" height="32" rx="9" fill="var(--accent)" />
-      <path
-        d="M16 5.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5-.6-5.6-4.9-9.9-10.5-10.5C11.1 15.4 15.4 11.1 16 5.5Z"
-        fill="var(--accent-foreground)"
-      />
-    </svg>
+      width={640}
+      height={346}
+      className={className}
+      style={{ filter: 'drop-shadow(0 0 10px rgba(0, 162, 232, 0.35))' }}
+    />
   );
 }
 
 export default function Logo({ className = '' }) {
   return (
-    <Link href="/" className={`group inline-flex items-center gap-2.5 ${className}`} aria-label="Vokter, ir al inicio">
-      <VokterMark className="h-8 w-8 transition-transform duration-500 group-hover:rotate-90" />
+    <Link
+      href="/"
+      className={`group inline-flex items-center gap-2.5 ${className}`}
+      aria-label="Vokter, ir al inicio"
+    >
+      <VokterMark className="h-8 w-auto transition-transform duration-500 group-hover:scale-110" />
       <span className="font-display text-lg font-bold tracking-[-0.04em]">Vokter</span>
     </Link>
   );

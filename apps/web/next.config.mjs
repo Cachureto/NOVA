@@ -7,20 +7,49 @@
  * reenvía /api/* al backend por detrás. Todo queda same-site, sin CORS y con
  * una sola URL pública.
  */
-const API_ORIGIN =
-  process.env.API_ORIGIN ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
-// Los rewrites se resuelven al construir, no en cada petición: lo que se
-// escriba aquí queda congelado en el build. Si la variable falta en Vercel, el
-// fallback a localhost se hornea y el resultado es una web desplegada en la que
-// /api/* da 404 y las páginas revientan al renderizar, sin ninguna pista de por
-// qué. Es mejor que el build falle aquí y se vea el motivo.
-if (process.env.VERCEL && !process.env.API_ORIGIN && !process.env.NEXT_PUBLIC_API_URL) {
+/**
+ * Deja el origen de la API en la forma que Next acepta como destino de un
+ * rewrite: una URL absoluta con protocolo y sin barra final.
+ *
+ * Se normaliza en vez de exigir el formato exacto porque el valor se escribe a
+ * mano en el panel de Vercel, y los dos errores típicos —pegar el host pelado
+ * y dejar la barra del final— fallan de formas poco obvias: sin protocolo Next
+ * revienta al cargar la configuración, y con barra el destino queda con una
+ * doble barra.
+ */
+function normalizarOrigen(valor) {
+  const limpio = String(valor).trim().replace(/\/+$/, '');
+  const conProtocolo = /^https?:\/\//i.test(limpio) ? limpio : `https://${limpio}`;
+  try {
+    // Valida de verdad: `new URL` rechaza espacios, rutas mal formadas, etc.
+    return new URL(conProtocolo).origin;
+  } catch {
+    throw new Error(
+      `API_ORIGIN no es una URL válida: ${JSON.stringify(valor)}. ` +
+        'Debe ser el dominio de la API, por ejemplo https://mi-api.vercel.app',
+    );
+  }
+}
+
+// Los rewrites se resuelven al construir, no en cada petición: lo que quede
+// aquí se congela en el build. Si la variable falta en Vercel, el fallback a
+// localhost se hornea y el resultado es una web desplegada en la que /api/* da
+// 404 y las páginas revientan al renderizar, sin ninguna pista de por qué. Es
+// mejor que el build falle aquí y se vea el motivo.
+const crudo = process.env.API_ORIGIN ?? process.env.NEXT_PUBLIC_API_URL;
+if (process.env.VERCEL && !crudo) {
   throw new Error(
     'Falta API_ORIGIN. Defínela en las variables de entorno del proyecto ' +
       '(marcada para Production) con el dominio de la API, sin barra final.',
   );
 }
+
+const API_ORIGIN = normalizarOrigen(crudo ?? 'http://localhost:4000');
+
+// Queda en el log del build: si la web no encuentra la API, lo primero que se
+// quiere ver es contra qué origen se construyó.
+console.log(`[next.config] /api/* se reenvía a ${API_ORIGIN}`);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

@@ -8,3 +8,5 @@ dist
 *.apk
 .DS_Store
 *.dump
+DEPLOY.md
+CLAUDE.md
