@@ -47,14 +47,8 @@ app.use('/api/categories', categoriesRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Export por defecto para Vercel.
+// Export por defecto, además del nombrado.
 //
-// Vercel detecta una app de Express buscando un archivo (app.js, index.js,
-// server.js, o los mismos bajo src/) que importe `express` Y además exporte la
-// app por defecto o llame a listen(). Este archivo importaba express pero solo
-// la exportaba con nombre, y server.js hace el listen pero no importa express:
-// sin ninguno que cumpliera las dos, Vercel trataba el proyecto como sitio
-// estático y fallaba con "No Output Directory named public".
-//
-// En local no cambia nada: server.js sigue usando el export con nombre.
+// Lo usa `api/[...path].js`, el punto de entrada de la API en Vercel.
+// En local no cambia nada: `server.js` sigue importando el export con nombre.
 export default app;
