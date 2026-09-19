@@ -8,7 +8,7 @@ catalog, and **drops with waitlists** for limited releases.
 ## Live
 
 
-| | |
+|Component| Path|
 |---|---|
 | Store | <https://nova-web-vokter.vercel.app> |
 | API | <https://nova-api-kappa.vercel.app/api/health> |
