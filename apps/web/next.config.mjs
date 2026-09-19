@@ -10,6 +10,18 @@
 const API_ORIGIN =
   process.env.API_ORIGIN ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
+// Los rewrites se resuelven al construir, no en cada petición: lo que se
+// escriba aquí queda congelado en el build. Si la variable falta en Vercel, el
+// fallback a localhost se hornea y el resultado es una web desplegada en la que
+// /api/* da 404 y las páginas revientan al renderizar, sin ninguna pista de por
+// qué. Es mejor que el build falle aquí y se vea el motivo.
+if (process.env.VERCEL && !process.env.API_ORIGIN && !process.env.NEXT_PUBLIC_API_URL) {
+  throw new Error(
+    'Falta API_ORIGIN. Defínela en las variables de entorno del proyecto ' +
+      '(marcada para Production) con el dominio de la API, sin barra final.',
+  );
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   agentRules: false,
