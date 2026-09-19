@@ -135,7 +135,6 @@ CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;
 -- Name: EXTENSION citext; Type: COMMENT; Schema: -; Owner: 
 --
 
-COMMENT ON EXTENSION citext IS 'data type for case-insensitive character strings';
 
 
 --
@@ -149,7 +148,6 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: 
 --
 
-COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -163,7 +161,6 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: 
 --
 
-COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -177,7 +174,6 @@ CREATE TYPE public.authenticity_status AS ENUM (
 );
 
 
-ALTER TYPE public.authenticity_status OWNER TO nova;
 
 --
 -- Name: drop_status; Type: TYPE; Schema: public; Owner: nova
@@ -192,7 +188,6 @@ CREATE TYPE public.drop_status AS ENUM (
 );
 
 
-ALTER TYPE public.drop_status OWNER TO nova;
 
 --
 -- Name: order_status; Type: TYPE; Schema: public; Owner: nova
@@ -208,7 +203,6 @@ CREATE TYPE public.order_status AS ENUM (
 );
 
 
-ALTER TYPE public.order_status OWNER TO nova;
 
 --
 -- Name: push_platform; Type: TYPE; Schema: public; Owner: nova
@@ -221,7 +215,6 @@ CREATE TYPE public.push_platform AS ENUM (
 );
 
 
-ALTER TYPE public.push_platform OWNER TO nova;
 
 --
 -- Name: unit_status; Type: TYPE; Schema: public; Owner: nova
@@ -236,7 +229,6 @@ CREATE TYPE public.unit_status AS ENUM (
 );
 
 
-ALTER TYPE public.unit_status OWNER TO nova;
 
 --
 -- Name: user_role; Type: TYPE; Schema: public; Owner: nova
@@ -249,7 +241,6 @@ CREATE TYPE public.user_role AS ENUM (
 );
 
 
-ALTER TYPE public.user_role OWNER TO nova;
 
 --
 -- Name: waitlist_status; Type: TYPE; Schema: public; Owner: nova
@@ -263,7 +254,6 @@ CREATE TYPE public.waitlist_status AS ENUM (
 );
 
 
-ALTER TYPE public.waitlist_status OWNER TO nova;
 
 --
 -- Name: immutable_unaccent(text); Type: FUNCTION; Schema: public; Owner: nova
@@ -274,7 +264,6 @@ CREATE FUNCTION public.immutable_unaccent(text) RETURNS text
     AS $_$ SELECT public.unaccent('public.unaccent'::regdictionary, $1) $_$;
 
 
-ALTER FUNCTION public.immutable_unaccent(text) OWNER TO nova;
 
 --
 -- Name: set_updated_at(); Type: FUNCTION; Schema: public; Owner: nova
@@ -285,7 +274,6 @@ CREATE FUNCTION public.set_updated_at() RETURNS trigger
     AS $$ BEGIN NEW.updated_at := now(); RETURN NEW; END $$;
 
 
-ALTER FUNCTION public.set_updated_at() OWNER TO nova;
 
 SET default_tablespace = '';
 
@@ -307,7 +295,6 @@ CREATE TABLE public.ai_tool_calls (
 );
 
 
-ALTER TABLE public.ai_tool_calls OWNER TO nova;
 
 --
 -- Name: ai_tool_calls_id_seq; Type: SEQUENCE; Schema: public; Owner: nova
@@ -321,7 +308,6 @@ CREATE SEQUENCE public.ai_tool_calls_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.ai_tool_calls_id_seq OWNER TO nova;
 
 --
 -- Name: ai_tool_calls_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nova
@@ -349,7 +335,6 @@ CREATE TABLE public.authenticity_checks (
 );
 
 
-ALTER TABLE public.authenticity_checks OWNER TO nova;
 
 --
 -- Name: authenticity_checks_id_seq; Type: SEQUENCE; Schema: public; Owner: nova
@@ -363,7 +348,6 @@ CREATE SEQUENCE public.authenticity_checks_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.authenticity_checks_id_seq OWNER TO nova;
 
 --
 -- Name: authenticity_checks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nova
@@ -384,7 +368,6 @@ CREATE TABLE public.categories (
 );
 
 
-ALTER TABLE public.categories OWNER TO nova;
 
 --
 -- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: nova
@@ -399,7 +382,6 @@ CREATE SEQUENCE public.categories_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.categories_id_seq OWNER TO nova;
 
 --
 -- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nova
@@ -422,7 +404,6 @@ CREATE TABLE public.drop_products (
 );
 
 
-ALTER TABLE public.drop_products OWNER TO nova;
 
 --
 -- Name: drop_waitlist; Type: TABLE; Schema: public; Owner: nova
@@ -437,7 +418,6 @@ CREATE TABLE public.drop_waitlist (
 );
 
 
-ALTER TABLE public.drop_waitlist OWNER TO nova;
 
 --
 -- Name: drops; Type: TABLE; Schema: public; Owner: nova
@@ -459,7 +439,6 @@ CREATE TABLE public.drops (
 );
 
 
-ALTER TABLE public.drops OWNER TO nova;
 
 --
 -- Name: order_items; Type: TABLE; Schema: public; Owner: nova
@@ -478,7 +457,6 @@ CREATE TABLE public.order_items (
 );
 
 
-ALTER TABLE public.order_items OWNER TO nova;
 
 --
 -- Name: orders; Type: TABLE; Schema: public; Owner: nova
@@ -500,7 +478,6 @@ CREATE TABLE public.orders (
 );
 
 
-ALTER TABLE public.orders OWNER TO nova;
 
 --
 -- Name: product_images; Type: TABLE; Schema: public; Owner: nova
@@ -515,7 +492,6 @@ CREATE TABLE public.product_images (
 );
 
 
-ALTER TABLE public.product_images OWNER TO nova;
 
 --
 -- Name: product_units; Type: TABLE; Schema: public; Owner: nova
@@ -533,7 +509,6 @@ CREATE TABLE public.product_units (
 );
 
 
-ALTER TABLE public.product_units OWNER TO nova;
 
 --
 -- Name: products; Type: TABLE; Schema: public; Owner: nova
@@ -562,7 +537,6 @@ CREATE TABLE public.products (
 );
 
 
-ALTER TABLE public.products OWNER TO nova;
 
 --
 -- Name: push_tokens; Type: TABLE; Schema: public; Owner: nova
@@ -579,7 +553,6 @@ CREATE TABLE public.push_tokens (
 );
 
 
-ALTER TABLE public.push_tokens OWNER TO nova;
 
 --
 -- Name: refresh_tokens; Type: TABLE; Schema: public; Owner: nova
@@ -597,7 +570,6 @@ CREATE TABLE public.refresh_tokens (
 );
 
 
-ALTER TABLE public.refresh_tokens OWNER TO nova;
 
 --
 -- Name: reviews; Type: TABLE; Schema: public; Owner: nova
@@ -618,7 +590,6 @@ CREATE TABLE public.reviews (
 );
 
 
-ALTER TABLE public.reviews OWNER TO nova;
 
 --
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: nova
@@ -649,7 +620,6 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO nova;
 
 --
 -- Name: v_authenticity_lookup; Type: VIEW; Schema: public; Owner: nova
@@ -676,7 +646,6 @@ UNION ALL
      JOIN public.products p ON ((p.id = u.product_id)));
 
 
-ALTER VIEW public.v_authenticity_lookup OWNER TO nova;
 
 --
 -- Name: v_catalog; Type: VIEW; Schema: public; Owner: nova
@@ -714,7 +683,6 @@ CREATE VIEW public.v_catalog AS
   WHERE p.is_published;
 
 
-ALTER VIEW public.v_catalog OWNER TO nova;
 
 --
 -- Name: ai_tool_calls id; Type: DEFAULT; Schema: public; Owner: nova

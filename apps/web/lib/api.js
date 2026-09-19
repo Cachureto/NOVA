@@ -1,4 +1,18 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+// Desde dónde se llama a la API:
+//
+// - En el navegador, contra el mismo dominio (cadena vacía = ruta relativa).
+//   Next reenvía /api/* al backend con el rewrite de next.config.mjs, así la
+//   cookie del refresh token sigue siendo same-site en producción.
+// - En el servidor (Server Components) no existen las rutas relativas, así que
+//   se usa el origen absoluto del backend.
+//
+// En local basta con NEXT_PUBLIC_API_URL=http://localhost:4000 y todo sigue
+// yendo directo, igual que antes.
+const SERVER_ORIGIN =
+  process.env.API_ORIGIN ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+const BROWSER_ORIGIN = process.env.NEXT_PUBLIC_API_URL ?? '';
+
+export const API_URL = typeof window === 'undefined' ? SERVER_ORIGIN : BROWSER_ORIGIN;
 
 export class ApiError extends Error {
   constructor(status, message, details) {

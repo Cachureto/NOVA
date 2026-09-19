@@ -171,6 +171,21 @@ npm run db:restore
 The dump excludes account data (users, tokens, orders, reviews) on purpose, so it carries no
 personal data and is safe to commit.
 
+To regenerate it after changing the catalog, run this from the repository root:
+
+```bash
+docker exec nova-db pg_dump -U nova -d nova --clean --if-exists --no-owner --no-acl \
+  --exclude-table-data=users --exclude-table-data=refresh_tokens --exclude-table-data=push_tokens \
+  --exclude-table-data=orders --exclude-table-data=order_items --exclude-table-data=reviews \
+  --exclude-table-data=authenticity_checks --exclude-table-data=ai_tool_calls --exclude-table-data=drop_waitlist \
+  | findstr /v "^COMMENT ON EXTENSION" > apps/backend/db/dump-latest.sql
+```
+
+`--no-owner --no-acl` and dropping the `COMMENT ON EXTENSION` lines are what make the dump portable.
+Without them it carries `ALTER ... OWNER TO nova`, and restoring it into a managed database (Neon,
+Supabase…) fails with `must be able to SET ROLE "nova"`, because there the owner is another role.
+With them, the objects belong to whoever runs the restore: `nova` locally, `neondb_owner` on Neon.
+
 ### 6. Run web and backend
 
 ```bash
