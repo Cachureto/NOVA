@@ -3,7 +3,9 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "//": "Turborepo filtra el entorno de cada tarea: en modo estricto (el de por defecto desde la v2) solo pasan las variables declaradas aquí. Las NEXT_PUBLIC_* las deja pasar solo porque infiere que es Next. API_ORIGIN no lleva ese prefijo a propósito (es del servidor, no del navegador), así que sin esta línea next build no la ve y el rewrite a la API se construye apuntando a localhost.",
+      "env": ["API_ORIGIN"]
     },
     "dev": {
       "cache": false,
