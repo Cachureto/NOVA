@@ -7,9 +7,9 @@ catalog, and **drops with waitlists** for limited releases.
 
 ## Live
 
-| Columna 1 | Columna 2 | Columna 3 |
+| |  |  |
 | :--- | :---: | ---: |
-| Izquierda | Centrado | Derecha |
+|  |  |  |
 | Store | <https://nova-web-vokter.vercel.app> |
 | API | <https://nova-api-kappa.vercel.app/api/health> |
 | Android app | `/download` on the store, or the APK link from EAS |
