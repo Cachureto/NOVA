@@ -7,7 +7,7 @@ catalog, and **drops with waitlists** for limited releases.
 
 ## Live
 
-| |  |  |
+
 | :--- | :---: | ---: |
 |  |  |  |
 | Store | <https://nova-web-vokter.vercel.app> |
